@@ -1,0 +1,2099 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PM Tool Rollout Readiness Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0f172a;
+    --surface: #1e293b;
+    --surface2: #263248;
+    --accent: #3b82f6;
+    --success: #22c55e;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --text: #f1f5f9;
+    --subtext: #94a3b8;
+    --border: #334155;
+    --card-hover: #2d3f58;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .dashboard {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px 16px;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    margin-bottom: 20px;
+  }
+
+  .header-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.3px;
+  }
+
+  .header-meta {
+    font-size: 12px;
+    color: var(--subtext);
+    margin-top: 3px;
+  }
+
+  .header-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .exec-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid transparent;
+  }
+
+  .pill-label { opacity: 0.75; font-weight: 500; }
+
+  .pill.green { background: rgba(34,197,94,0.15); border-color: rgba(34,197,94,0.35); color: #4ade80; }
+  .pill.yellow { background: rgba(245,158,11,0.15); border-color: rgba(245,158,11,0.35); color: #fbbf24; }
+  .pill.red { background: rgba(239,68,68,0.15); border-color: rgba(239,68,68,0.35); color: #f87171; }
+  .pill.blue { background: rgba(59,130,246,0.15); border-color: rgba(59,130,246,0.35); color: #60a5fa; }
+
+  /* ── CONTROLS ── */
+  .controls-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: var(--surface);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    margin-bottom: 18px;
+  }
+
+  .control-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .control-label {
+    font-size: 11px;
+    color: var(--subtext);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+
+  .control-divider {
+    width: 1px;
+    height: 28px;
+    background: var(--border);
+  }
+
+  select.ctrl-select {
+    background: var(--surface2);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  select.ctrl-select:hover, select.ctrl-select:focus {
+    border-color: var(--accent);
+  }
+
+  .seg-control {
+    display: flex;
+    background: var(--surface2);
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .seg-btn {
+    padding: 5px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    background: transparent;
+    color: var(--subtext);
+    border: none;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .seg-btn.active {
+    background: var(--accent);
+    color: #fff;
+  }
+
+  .seg-btn:hover:not(.active) {
+    background: var(--border);
+    color: var(--text);
+  }
+
+  .toggle-btn {
+    padding: 5px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    background: var(--surface2);
+    color: var(--subtext);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .toggle-btn.active {
+    background: rgba(59,130,246,0.2);
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .toggle-btn:hover:not(.active) {
+    border-color: var(--accent);
+    color: var(--text);
+  }
+
+  /* Phase chips */
+  .phase-chips {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .phase-chip {
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    background: var(--surface2);
+    color: var(--subtext);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .phase-chip.active {
+    background: rgba(59,130,246,0.2);
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .phase-chip:hover:not(.active) {
+    border-color: var(--accent);
+    color: var(--text);
+  }
+
+  /* ── RISK BANNER ── */
+  .risk-banner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    background: rgba(239,68,68,0.1);
+    border: 1px solid rgba(239,68,68,0.4);
+    border-radius: 8px;
+    margin-bottom: 16px;
+    color: #fca5a5;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .risk-banner .risk-icon { font-size: 16px; }
+
+  /* ── COMPARE BAR ── */
+  .compare-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    background: rgba(59,130,246,0.08);
+    border: 1px solid rgba(59,130,246,0.3);
+    border-radius: 8px;
+    margin-bottom: 16px;
+    font-size: 12px;
+    flex-wrap: wrap;
+  }
+
+  .compare-bar .compare-label { color: var(--accent); font-weight: 600; }
+
+  /* ── KPI CARDS ── */
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+
+  @media (max-width: 1100px) { .kpi-row { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 600px) { .kpi-row { grid-template-columns: repeat(2, 1fr); } }
+
+  .kpi-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+    position: relative;
+    transition: all 0.2s;
+    overflow: hidden;
+  }
+
+  .kpi-card.clickable {
+    cursor: pointer;
+  }
+
+  .kpi-card.clickable:hover {
+    background: var(--card-hover);
+    border-color: var(--accent);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  }
+
+  .kpi-card.risk-highlight {
+    border-color: rgba(239,68,68,0.5);
+    box-shadow: 0 0 0 1px rgba(239,68,68,0.2);
+  }
+
+  .kpi-card.caution-highlight {
+    border-color: rgba(245,158,11,0.5);
+    box-shadow: 0 0 0 1px rgba(245,158,11,0.2);
+  }
+
+  .kpi-label {
+    font-size: 11px;
+    color: var(--subtext);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+
+  .kpi-value {
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .kpi-sublabel {
+    font-size: 11px;
+    color: var(--subtext);
+    margin-bottom: 8px;
+  }
+
+  .kpi-bar-track {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .kpi-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.5s ease;
+  }
+
+  .kpi-delta {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .kpi-delta.better { background: rgba(34,197,94,0.2); color: #4ade80; }
+  .kpi-delta.worse { background: rgba(239,68,68,0.2); color: #f87171; }
+  .kpi-delta.neutral { background: rgba(148,163,184,0.15); color: var(--subtext); }
+
+  .kpi-click-hint {
+    position: absolute;
+    bottom: 8px;
+    right: 10px;
+    font-size: 10px;
+    color: var(--subtext);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .kpi-card.clickable:hover .kpi-click-hint { opacity: 1; }
+
+  /* Readiness badge */
+  .readiness-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+  }
+
+  .readiness-badge.ready { background: rgba(34,197,94,0.2); color: #4ade80; border: 1px solid rgba(34,197,94,0.4); }
+  .readiness-badge.caution { background: rgba(245,158,11,0.2); color: #fbbf24; border: 1px solid rgba(245,158,11,0.4); }
+  .readiness-badge.not-ready { background: rgba(239,68,68,0.2); color: #f87171; border: 1px solid rgba(239,68,68,0.4); }
+
+  /* ── PANELS ── */
+  .panels-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 18px;
+  }
+
+  @media (max-width: 900px) { .panels-row { grid-template-columns: 1fr; } }
+
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+  }
+
+  .panel-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .panel-title::before {
+    content: '';
+    display: inline-block;
+    width: 3px;
+    height: 14px;
+    border-radius: 2px;
+    background: var(--accent);
+  }
+
+  /* Chart container */
+  .chart-container {
+    position: relative;
+    height: 200px;
+    margin-bottom: 14px;
+  }
+
+  .chart-container.small { height: 160px; }
+  .chart-container.medium { height: 220px; }
+  .chart-container.large { height: 280px; }
+
+  /* Stats list */
+  .stats-list { display: flex; flex-direction: column; gap: 8px; }
+
+  .stat-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .stat-label { font-size: 12px; color: var(--subtext); }
+
+  .stat-value {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    white-space: nowrap;
+  }
+
+  .stat-bar-container {
+    flex: 1;
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+    min-width: 60px;
+  }
+
+  .stat-bar {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.5s;
+  }
+
+  /* Reopen breakdown */
+  .reopen-breakdown {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+  }
+
+  .reopen-breakdown-title {
+    font-size: 11px;
+    color: var(--subtext);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+  }
+
+  .breakdown-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .breakdown-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .breakdown-bar-label {
+    font-size: 11px;
+    color: var(--subtext);
+    width: 24px;
+    flex-shrink: 0;
+  }
+
+  .breakdown-bar-track {
+    flex: 1;
+    height: 8px;
+    background: var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .breakdown-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.5s;
+  }
+
+  .breakdown-bar-val {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text);
+    width: 20px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  /* Risk badge */
+  .risk-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 14px;
+  }
+
+  .risk-badge.high { background: rgba(239,68,68,0.2); color: #f87171; border: 1px solid rgba(239,68,68,0.4); }
+  .risk-badge.medium { background: rgba(245,158,11,0.2); color: #fbbf24; border: 1px solid rgba(245,158,11,0.4); }
+  .risk-badge.low { background: rgba(34,197,94,0.2); color: #4ade80; border: 1px solid rgba(34,197,94,0.4); }
+
+  /* Risk metrics */
+  .risk-metrics { display: flex; flex-direction: column; gap: 6px; margin-top: 14px; }
+
+  .risk-metric {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 10px;
+    background: var(--surface2);
+    border-radius: 6px;
+    font-size: 12px;
+  }
+
+  .risk-metric-label { color: var(--subtext); }
+  .risk-metric-value { font-weight: 700; }
+
+  /* ── TIMELINE PANEL ── */
+  .timeline-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 18px;
+  }
+
+  .timeline-toggle-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .timeline-toggle-header:hover .timeline-expand-icon { color: var(--accent); }
+
+  .timeline-expand-icon {
+    color: var(--subtext);
+    font-size: 14px;
+    transition: all 0.3s;
+  }
+
+  .timeline-expand-icon.open { transform: rotate(180deg); }
+
+  .timeline-content {
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+  }
+
+  .timeline-content.collapsed { max-height: 0; }
+  .timeline-content.expanded { max-height: 500px; }
+
+  /* Snapshot mini cards */
+  .snapshot-mini-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+
+  @media (max-width: 700px) { .snapshot-mini-cards { grid-template-columns: 1fr; } }
+
+  .snapshot-mini-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .snapshot-mini-card:hover, .snapshot-mini-card.selected {
+    border-color: var(--accent);
+    background: var(--card-hover);
+  }
+
+  .mini-card-date { font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .mini-card-env { font-size: 10px; color: var(--subtext); margin-bottom: 8px; }
+  .mini-card-metrics { display: flex; flex-direction: column; gap: 3px; }
+  .mini-card-metric { font-size: 11px; display: flex; justify-content: space-between; }
+  .mini-card-metric-label { color: var(--subtext); }
+  .mini-card-metric-value { font-weight: 600; }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+
+  .modal-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    width: 100%;
+    max-width: 580px;
+    max-height: 85vh;
+    overflow-y: auto;
+    transform: scale(0.95);
+    transition: transform 0.3s;
+    position: relative;
+  }
+
+  .modal-overlay.open .modal { transform: scale(1); }
+
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .modal-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .modal-close {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--subtext);
+    font-size: 16px;
+    line-height: 1;
+    transition: all 0.2s;
+  }
+
+  .modal-close:hover { color: var(--text); border-color: var(--accent); }
+
+  .modal-section { margin-bottom: 18px; }
+  .modal-section-title { font-size: 11px; color: var(--subtext); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+
+  .modal-stat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .modal-stat-box {
+    background: var(--surface2);
+    border-radius: 8px;
+    padding: 10px 12px;
+    text-align: center;
+  }
+
+  .modal-stat-box-value { font-size: 22px; font-weight: 700; margin-bottom: 2px; }
+  .modal-stat-box-label { font-size: 10px; color: var(--subtext); font-weight: 600; text-transform: uppercase; }
+
+  .modal-trend {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: var(--surface2);
+    border-radius: 6px;
+    font-size: 12px;
+  }
+
+  .modal-trend-label { color: var(--subtext); }
+  .modal-trend-value { font-weight: 700; }
+
+  .modal-chart-container { height: 180px; position: relative; }
+
+  .modal-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .modal-table th { text-align: left; padding: 7px 10px; color: var(--subtext); font-weight: 600; border-bottom: 1px solid var(--border); }
+  .modal-table td { padding: 7px 10px; border-bottom: 1px solid rgba(51,65,85,0.5); }
+  .modal-table tr:last-child td { border-bottom: none; }
+
+  /* Trend arrows */
+  .trend-up-good { color: #4ade80; }
+  .trend-up-bad { color: #f87171; }
+  .trend-down-good { color: #4ade80; }
+  .trend-down-bad { color: #f87171; }
+  .trend-neutral { color: var(--subtext); }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--surface); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--subtext); }
+
+  /* Env badge */
+  .env-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    background: rgba(59,130,246,0.2);
+    color: #60a5fa;
+    border: 1px solid rgba(59,130,246,0.3);
+  }
+
+  .env-badge.prod { background: rgba(239,68,68,0.15); color: #fca5a5; border-color: rgba(239,68,68,0.3); }
+  .env-badge.uat { background: rgba(245,158,11,0.15); color: #fde68a; border-color: rgba(245,158,11,0.3); }
+
+  /* Timeline full mode */
+  .timeline-full {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 18px;
+  }
+
+  .timeline-full-chart { height: 320px; position: relative; }
+
+  /* Legend dots */
+  .legend-row {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    color: var(--subtext);
+  }
+
+  .legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* Notes tag */
+  .notes-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 8px;
+    background: rgba(245,158,11,0.1);
+    border: 1px solid rgba(245,158,11,0.3);
+    color: #fbbf24;
+    border-radius: 4px;
+    font-size: 11px;
+    margin-top: 8px;
+  }
+
+  /* ── UTILITY ── */
+  .hidden { display: none !important; }
+  .text-success { color: var(--success); }
+  .text-warning { color: var(--warning); }
+  .text-danger { color: var(--danger); }
+  .text-accent { color: var(--accent); }
+  .text-sub { color: var(--subtext); }
+
+  .mt-2 { margin-top: 8px; }
+  .mt-3 { margin-top: 12px; }
+  .flex { display: flex; }
+  .items-center { align-items: center; }
+  .gap-2 { gap: 8px; }
+  .flex-wrap { flex-wrap: wrap; }
+
+  /* doughnut legend */
+  .doughnut-legend {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 5px;
+    margin-top: 10px;
+  }
+
+  .doughnut-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    color: var(--subtext);
+  }
+
+  .doughnut-legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  .doughnut-legend-val { font-weight: 600; color: var(--text); }
+</style>
+</head>
+<body>
+
+<div class="dashboard" id="app"></div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modalContent"></div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+// DATA
+// ─────────────────────────────────────────────
+const SNAPSHOTS = [
+  {
+    id: "23feb2026", reportDate: "23 Feb 2026", environment: "UAT", phase: "After Soft Launch 01",
+    total: 224, beforeMRO: 208, afterMRO: 16,
+    closed: 26, cancelled: 8, passed: 156,
+    passedReopenBreakdown: [12, 8, 0],
+    open: 7, reopen: 11,
+    reopenBreakdown: [4, 4, 2, 0],
+    severityHigh: 9, severityMedium: 7, severityLow: 2,
+    toConfirm: 0, notes: ""
+  },
+  {
+    id: "25feb2026", reportDate: "25 Feb 2026", environment: "PROD", phase: "After Soft Launch 02",
+    total: 141, beforeMRO: 134, afterMRO: 7,
+    closed: 3, cancelled: 4, passed: 37,
+    passedReopenBreakdown: [3, 5, 0],
+    open: 74, reopen: 15,
+    reopenBreakdown: [1, 3, 2, 0],
+    severityHigh: 38, severityMedium: 45, severityLow: 6,
+    toConfirm: 0, notes: ""
+  },
+  {
+    id: "18mar2026", reportDate: "18 Mar 2026", environment: "PRD", phase: "After Soft Launch 02",
+    total: 194, beforeMRO: 163, afterMRO: 31,
+    closed: 20, cancelled: 6, passed: 110,
+    passedReopenBreakdown: [26, 3, 0],
+    open: 11, reopen: 10,
+    reopenBreakdown: [5, 2, 2, 1],
+    severityHigh: 9, severityMedium: 10, severityLow: 0,
+    toConfirm: 6, notes: "To confirm: 6 issues"
+  }
+];
+
+const PHASES = ["After Soft Launch 01", "After Soft Launch 02"];
+
+// ─────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────
+const state = {
+  selectedSnapshot: 2,
+  compareMode: false,
+  compareSnapshot: 1,
+  baseline: "before_mro",
+  viewMode: "snapshot",
+  drilldown: null,
+  phaseFilter: [],
+  riskOnly: false,
+  timelineExpanded: true,
+};
+
+// ─────────────────────────────────────────────
+// CHART REGISTRY — destroy before recreate
+// ─────────────────────────────────────────────
+const chartRegistry = {};
+
+function destroyChart(id) {
+  if (chartRegistry[id]) {
+    chartRegistry[id].destroy();
+    delete chartRegistry[id];
+  }
+}
+
+function registerChart(id, chart) {
+  destroyChart(id);
+  chartRegistry[id] = chart;
+}
+
+// ─────────────────────────────────────────────
+// COMPUTED METRICS
+// ─────────────────────────────────────────────
+function computeMetrics(snap, baseline) {
+  const base = baseline === "total_issues" ? snap.total : snap.beforeMRO;
+  const resolved = snap.closed + snap.cancelled + snap.passed;
+  const pending = snap.open + snap.reopen + snap.toConfirm;
+  const resolutionRate = base > 0 ? (resolved / base * 100) : 0;
+  const backlogRate = base > 0 ? (pending / base * 100) : 0;
+  const reopenDenom = snap.passed + snap.reopen;
+  const reopenRate = reopenDenom > 0 ? (snap.reopen / reopenDenom * 100) : 0;
+  const sevTotal = snap.severityHigh + snap.severityMedium + snap.severityLow;
+  const highSevRate = sevTotal > 0 ? (snap.severityHigh / sevTotal * 100) : 0;
+
+  let readiness;
+  if (resolutionRate >= 90 && backlogRate <= 10 && highSevRate <= 25) {
+    readiness = "READY";
+  } else if (resolutionRate >= 70 && backlogRate <= 30) {
+    readiness = "CAUTION";
+  } else {
+    readiness = "NOT READY";
+  }
+
+  // Overall risk
+  let risk;
+  if (snap.severityHigh >= 30 || backlogRate >= 50) risk = "HIGH";
+  else if (snap.severityHigh >= 10 || backlogRate >= 25) risk = "MEDIUM";
+  else risk = "LOW";
+
+  return { base, resolved, pending, resolutionRate, backlogRate, reopenRate, highSevRate, readiness, risk, sevTotal };
+}
+
+function getFilteredSnapshots() {
+  if (state.phaseFilter.length === 0) return SNAPSHOTS;
+  return SNAPSHOTS.filter(s => state.phaseFilter.includes(s.phase));
+}
+
+function getReadinessClass(r) {
+  if (r === "READY") return "ready";
+  if (r === "CAUTION") return "caution";
+  return "not-ready";
+}
+
+function getPillClass(type, value) {
+  if (type === "resolution") return value >= 80 ? "green" : value >= 60 ? "yellow" : "red";
+  if (type === "backlog") return value <= 20 ? "green" : value <= 40 ? "yellow" : "red";
+  if (type === "reopen") return value <= 10 ? "green" : value <= 20 ? "yellow" : "red";
+  if (type === "highsev") return value <= 25 ? "green" : value <= 50 ? "yellow" : "red";
+  return "blue";
+}
+
+function fmtPct(v) { return v.toFixed(1) + "%"; }
+function fmtNum(v) { return v.toLocaleString(); }
+
+function getDelta(curr, prev, type) {
+  const diff = curr - prev;
+  if (Math.abs(diff) < 0.05) return { label: "→", cls: "neutral" };
+  const up = diff > 0;
+  let better;
+  // for resolution: up = better; for backlog/reopen/highsev/counts: up = worse
+  if (type === "resolution") better = up;
+  else better = !up;
+  const arrow = up ? "↑" : "↓";
+  const cls = better ? "better" : "worse";
+  const absVal = Math.abs(diff);
+  const label = arrow + " " + (type === "count" ? Math.abs(Math.round(diff)) : fmtPct(absVal));
+  return { label, cls };
+}
+
+function getEnvBadgeClass(env) {
+  const e = env.toUpperCase();
+  if (e === "UAT") return "uat";
+  if (e === "PROD" || e === "PRD") return "prod";
+  return "";
+}
+
+// ─────────────────────────────────────────────
+// RENDER
+// ─────────────────────────────────────────────
+function render() {
+  const app = document.getElementById("app");
+  const snap = SNAPSHOTS[state.selectedSnapshot];
+  const metrics = computeMetrics(snap, state.baseline);
+  const cSnap = state.compareMode ? SNAPSHOTS[state.compareSnapshot] : null;
+  const cMetrics = cSnap ? computeMetrics(cSnap, state.baseline) : null;
+
+  app.innerHTML = buildHTML(snap, metrics, cSnap, cMetrics);
+  bindEvents();
+  renderCharts(snap, metrics, cSnap, cMetrics);
+}
+
+// ─────────────────────────────────────────────
+// BUILD HTML
+// ─────────────────────────────────────────────
+function buildHTML(snap, metrics, cSnap, cMetrics) {
+  return `
+    ${buildHeader(snap, metrics)}
+    ${buildControlsBar(snap)}
+    ${state.riskOnly && metrics.readiness !== "READY" ? buildRiskBanner(snap, metrics) : ""}
+    ${state.compareMode ? buildCompareBar(snap, cSnap) : ""}
+    ${state.viewMode === "snapshot" ? buildSnapshotView(snap, metrics, cSnap, cMetrics) : buildTimelineView()}
+  `;
+}
+
+function buildHeader(snap, metrics) {
+  const rc = getReadinessClass(metrics.readiness);
+  const pills = [
+    { label: "Readiness", value: metrics.readiness, cls: rc === "ready" ? "green" : rc === "caution" ? "yellow" : "red" },
+    { label: "Resolution", value: fmtPct(metrics.resolutionRate), cls: getPillClass("resolution", metrics.resolutionRate) },
+    { label: "Backlog", value: fmtPct(metrics.backlogRate), cls: getPillClass("backlog", metrics.backlogRate) },
+    { label: "Reopen Rate", value: fmtPct(metrics.reopenRate), cls: getPillClass("reopen", metrics.reopenRate) },
+    { label: "High Severity", value: fmtPct(metrics.highSevRate), cls: getPillClass("highsev", metrics.highSevRate) },
+  ];
+
+  return `
+  <div class="header">
+    <div class="header-top">
+      <div>
+        <h1>PM Tool Rollout Readiness Dashboard</h1>
+        <div class="header-meta">
+          Snapshot: <strong>${snap.reportDate}</strong> &nbsp;|&nbsp;
+          Environment: <span class="env-badge ${getEnvBadgeClass(snap.environment)}">${snap.environment}</span> &nbsp;|&nbsp;
+          Phase: ${snap.phase}
+          ${snap.notes ? `<span class="notes-tag">&#9888; ${snap.notes}</span>` : ""}
+        </div>
+      </div>
+    </div>
+    <div class="exec-pills">
+      ${pills.map(p => `
+        <div class="pill ${p.cls}">
+          <span class="pill-label">${p.label}</span>
+          <strong>${p.value}</strong>
+        </div>
+      `).join("")}
+    </div>
+  </div>`;
+}
+
+function buildControlsBar(snap) {
+  const snapshotOptions = SNAPSHOTS.map((s, i) =>
+    `<option value="${i}" ${i === state.selectedSnapshot ? "selected" : ""}>${s.reportDate} (${s.environment})</option>`
+  ).join("");
+
+  const compareOptions = SNAPSHOTS.map((s, i) =>
+    `<option value="${i}" ${i === state.compareSnapshot ? "selected" : ""}>${s.reportDate} (${s.environment})</option>`
+  ).join("");
+
+  const phaseChips = PHASES.map(p => `
+    <button class="phase-chip ${state.phaseFilter.includes(p) ? "active" : ""}" data-phase="${p}">${p}</button>
+  `).join("");
+
+  return `
+  <div class="controls-bar">
+    <div class="control-group">
+      <span class="control-label">Snapshot</span>
+      <select class="ctrl-select" id="snapshotSelect">${snapshotOptions}</select>
+    </div>
+
+    <div class="control-divider"></div>
+
+    <div class="control-group">
+      <span class="control-label">Compare</span>
+      <button class="toggle-btn ${state.compareMode ? "active" : ""}" id="compareModeBtn">
+        ${state.compareMode ? "Compare ON" : "Compare OFF"}
+      </button>
+      ${state.compareMode ? `
+        <select class="ctrl-select" id="compareSelect">${compareOptions}</select>
+      ` : ""}
+    </div>
+
+    <div class="control-divider"></div>
+
+    <div class="control-group">
+      <span class="control-label">Baseline</span>
+      <div class="seg-control">
+        <button class="seg-btn ${state.baseline === "total_issues" ? "active" : ""}" data-baseline="total_issues">Total Issues</button>
+        <button class="seg-btn ${state.baseline === "before_mro" ? "active" : ""}" data-baseline="before_mro">Before MRO</button>
+      </div>
+    </div>
+
+    <div class="control-divider"></div>
+
+    <div class="control-group">
+      <span class="control-label">View</span>
+      <div class="seg-control">
+        <button class="seg-btn ${state.viewMode === "snapshot" ? "active" : ""}" data-view="snapshot">Snapshot</button>
+        <button class="seg-btn ${state.viewMode === "timeline" ? "active" : ""}" data-view="timeline">Timeline</button>
+      </div>
+    </div>
+
+    <div class="control-divider"></div>
+
+    <div class="control-group">
+      <span class="control-label">Phase</span>
+      <div class="phase-chips">${phaseChips}</div>
+    </div>
+
+    <div class="control-divider"></div>
+
+    <div class="control-group">
+      <button class="toggle-btn ${state.riskOnly ? "active" : ""}" id="riskOnlyBtn">
+        ${state.riskOnly ? "&#9888; Risk Only ON" : "Risk Only"}
+      </button>
+    </div>
+  </div>`;
+}
+
+function buildRiskBanner(snap, metrics) {
+  const issues = [];
+  if (metrics.backlogRate > 30) issues.push(`High backlog rate (${fmtPct(metrics.backlogRate)})`);
+  if (metrics.highSevRate > 50) issues.push(`Critical high-severity concentration (${fmtPct(metrics.highSevRate)})`);
+  if (metrics.resolutionRate < 70) issues.push(`Low resolution rate (${fmtPct(metrics.resolutionRate)})`);
+  if (snap.reopen > 10) issues.push(`High reopen count (${snap.reopen} issues)`);
+  return `
+  <div class="risk-banner">
+    <span class="risk-icon">&#9888;</span>
+    <strong>RISK ALERT:</strong>&nbsp; ${issues.length > 0 ? issues.join(" &nbsp;|&nbsp; ") : "System not ready for rollout — review KPIs below"}
+  </div>`;
+}
+
+function buildCompareBar(snap, cSnap) {
+  if (!cSnap) return "";
+  return `
+  <div class="compare-bar">
+    <span class="compare-label">&#9741; Compare Mode</span>
+    <span>Comparing <strong>${snap.reportDate}</strong> vs <strong>${cSnap.reportDate}</strong></span>
+    <span style="color:var(--subtext)">Delta indicators show change from compare snapshot → primary snapshot</span>
+  </div>`;
+}
+
+function buildSnapshotView(snap, metrics, cSnap, cMetrics) {
+  return `
+    ${buildKPIRow(snap, metrics, cSnap, cMetrics)}
+    ${buildPanelsRow(snap, metrics)}
+    ${buildTimelinePanel(snap, metrics)}
+  `;
+}
+
+function buildKPIRow(snap, metrics, cSnap, cMetrics) {
+  const cards = [
+    buildKPICard("Total Issues", fmtNum(snap.total), `Base: ${metrics.base} (${state.baseline === "before_mro" ? "Before MRO" : "Total"})`, metrics.base / 300 * 100, "#3b82f6", null, null, null),
+    buildKPICard("Resolved", fmtNum(metrics.resolved), `${fmtPct(metrics.resolutionRate)} resolution`, metrics.resolutionRate, "#22c55e",
+      cMetrics ? getDelta(metrics.resolutionRate, cMetrics.resolutionRate, "resolution") : null, "passed", snap),
+    buildKPICard("Pending", fmtNum(metrics.pending), `${fmtPct(metrics.backlogRate)} backlog rate`, metrics.backlogRate, metrics.backlogRate > 30 ? "#ef4444" : "#f59e0b",
+      cMetrics ? getDelta(metrics.backlogRate, cMetrics.backlogRate, "backlog") : null, "backlog", snap),
+    buildKPICard("Reopen", fmtNum(snap.reopen), `${fmtPct(metrics.reopenRate)} reopen rate`, metrics.reopenRate, metrics.reopenRate > 20 ? "#ef4444" : "#f59e0b",
+      cMetrics ? getDelta(metrics.reopenRate, cMetrics.reopenRate, "reopen") : null, "reopen", snap),
+    buildKPICard("High Severity", fmtNum(snap.severityHigh), `${fmtPct(metrics.highSevRate)} of severity issues`, metrics.highSevRate, metrics.highSevRate > 50 ? "#ef4444" : "#f59e0b",
+      cMetrics ? getDelta(metrics.highSevRate, cMetrics.highSevRate, "highsev") : null, "high_severity", snap),
+    buildReadinessCard(metrics, cMetrics),
+  ];
+
+  return `<div class="kpi-row">${cards.join("")}</div>`;
+}
+
+function buildKPICard(label, value, sublabel, barPct, barColor, delta, drilldownType, snap) {
+  const isClickable = !!drilldownType;
+  const barWidth = Math.min(100, Math.max(0, barPct || 0));
+  const isRisk = state.riskOnly && (barColor === "#ef4444");
+  const isCaution = state.riskOnly && (barColor === "#f59e0b");
+
+  return `
+  <div class="kpi-card ${isClickable ? "clickable" : ""} ${isRisk ? "risk-highlight" : ""} ${isCaution ? "caution-highlight" : ""}"
+       ${isClickable ? `data-drilldown="${drilldownType}"` : ""}>
+    <div class="kpi-label">${label}</div>
+    <div class="kpi-value" style="color:${barColor}">${value}</div>
+    <div class="kpi-sublabel">${sublabel}</div>
+    <div class="kpi-bar-track">
+      <div class="kpi-bar-fill" style="width:${barWidth}%;background:${barColor}"></div>
+    </div>
+    ${delta ? `<div class="kpi-delta ${delta.cls}">${delta.label}</div>` : ""}
+    ${isClickable ? `<div class="kpi-click-hint">Click for details</div>` : ""}
+  </div>`;
+}
+
+function buildReadinessCard(metrics, cMetrics) {
+  const rc = getReadinessClass(metrics.readiness);
+  const rcColor = rc === "ready" ? "#22c55e" : rc === "caution" ? "#f59e0b" : "#ef4444";
+  const isRisk = state.riskOnly && rc === "not-ready";
+  const isCaution = state.riskOnly && rc === "caution";
+
+  let delta = null;
+  if (cMetrics) {
+    const order = { "READY": 2, "CAUTION": 1, "NOT READY": 0 };
+    const diff = order[metrics.readiness] - order[cMetrics.readiness];
+    if (diff > 0) delta = { label: "↑ Improved", cls: "better" };
+    else if (diff < 0) delta = { label: "↓ Declined", cls: "worse" };
+    else delta = { label: "→ Same", cls: "neutral" };
+  }
+
+  return `
+  <div class="kpi-card ${isRisk ? "risk-highlight" : ""} ${isCaution ? "caution-highlight" : ""}">
+    <div class="kpi-label">Rollout Readiness</div>
+    <div style="margin:6px 0"><span class="readiness-badge ${rc}">${metrics.readiness}</span></div>
+    <div class="kpi-sublabel">Res: ${fmtPct(metrics.resolutionRate)} | BL: ${fmtPct(metrics.backlogRate)}</div>
+    <div class="kpi-bar-track">
+      <div class="kpi-bar-fill" style="width:${metrics.resolutionRate}%;background:${rcColor}"></div>
+    </div>
+    ${delta ? `<div class="kpi-delta ${delta.cls}">${delta.label}</div>` : ""}
+  </div>`;
+}
+
+function buildPanelsRow(snap, metrics) {
+  return `
+  <div class="panels-row">
+    ${buildQualityPanel(snap, metrics)}
+    ${buildRiskPanel(snap, metrics)}
+  </div>`;
+}
+
+function buildQualityPanel(snap, metrics) {
+  const stats = [
+    { label: "Resolution Rate", value: fmtPct(metrics.resolutionRate), pct: metrics.resolutionRate, color: metrics.resolutionRate >= 80 ? "#22c55e" : metrics.resolutionRate >= 60 ? "#f59e0b" : "#ef4444" },
+    { label: "Backlog Rate", value: fmtPct(metrics.backlogRate), pct: metrics.backlogRate, color: metrics.backlogRate <= 20 ? "#22c55e" : metrics.backlogRate <= 40 ? "#f59e0b" : "#ef4444" },
+    { label: "Reopen Rate", value: fmtPct(metrics.reopenRate), pct: metrics.reopenRate, color: metrics.reopenRate <= 10 ? "#22c55e" : metrics.reopenRate <= 20 ? "#f59e0b" : "#ef4444" },
+  ];
+
+  const prbMax = Math.max(...snap.passedReopenBreakdown, 1);
+
+  return `
+  <div class="panel">
+    <div class="panel-title">Quality &amp; Stability</div>
+    <div class="chart-container small">
+      <canvas id="doughnutChart"></canvas>
+    </div>
+    <div class="doughnut-legend" id="doughnutLegend"></div>
+    <div class="stats-list mt-3">
+      ${stats.map(s => `
+        <div class="stat-row">
+          <span class="stat-label">${s.label}</span>
+          <div class="stat-bar-container">
+            <div class="stat-bar" style="width:${Math.min(100,s.pct)}%;background:${s.color}"></div>
+          </div>
+          <span class="stat-value" style="color:${s.color}">${s.value}</span>
+        </div>
+      `).join("")}
+    </div>
+    <div class="reopen-breakdown">
+      <div class="reopen-breakdown-title">Passed Issues Previously Reopened</div>
+      <div class="breakdown-bars">
+        ${snap.passedReopenBreakdown.map((v, i) => `
+          <div class="breakdown-bar-row">
+            <span class="breakdown-bar-label">R${i+1}</span>
+            <div class="breakdown-bar-track">
+              <div class="breakdown-bar-fill" style="width:${prbMax > 0 ? (v/prbMax*100) : 0}%;background:${i===0?"#3b82f6":i===1?"#f59e0b":"#ef4444"}"></div>
+            </div>
+            <span class="breakdown-bar-val">${v}</span>
+          </div>
+        `).join("")}
+      </div>
+    </div>
+  </div>`;
+}
+
+function buildRiskPanel(snap, metrics) {
+  const sevMax = Math.max(snap.severityHigh, snap.severityMedium, snap.severityLow, 1);
+  const rbMax = Math.max(...snap.reopenBreakdown, 1);
+
+  const riskClass = metrics.risk.toLowerCase();
+
+  return `
+  <div class="panel">
+    <div class="panel-title">Risk Analysis</div>
+    <div class="risk-badge ${riskClass}">
+      ${metrics.risk === "HIGH" ? "&#9888;" : metrics.risk === "MEDIUM" ? "&#9654;" : "&#10003;"}
+      ${metrics.risk} RISK
+    </div>
+    <div class="chart-container small">
+      <canvas id="severityChart"></canvas>
+    </div>
+    <div class="risk-metrics">
+      <div class="risk-metric">
+        <span class="risk-metric-label">High Severity Concentration</span>
+        <span class="risk-metric-value" style="color:${metrics.highSevRate > 50 ? "#ef4444" : metrics.highSevRate > 25 ? "#f59e0b" : "#22c55e"}">${fmtPct(metrics.highSevRate)}</span>
+      </div>
+      <div class="risk-metric">
+        <span class="risk-metric-label">Open + Reopen</span>
+        <span class="risk-metric-value" style="color:${(snap.open+snap.reopen) > 20 ? "#ef4444" : "#f59e0b"}">${snap.open + snap.reopen}</span>
+      </div>
+      ${snap.toConfirm > 0 ? `
+      <div class="risk-metric">
+        <span class="risk-metric-label">To Confirm</span>
+        <span class="risk-metric-value" style="color:#f59e0b">${snap.toConfirm}</span>
+      </div>` : ""}
+    </div>
+    <div class="reopen-breakdown mt-3">
+      <div class="reopen-breakdown-title">Current Reopen by Times</div>
+      <div class="breakdown-bars">
+        ${snap.reopenBreakdown.map((v, i) => `
+          <div class="breakdown-bar-row">
+            <span class="breakdown-bar-label">R${i+1}</span>
+            <div class="breakdown-bar-track">
+              <div class="breakdown-bar-fill" style="width:${rbMax > 0 ? (v/rbMax*100) : 0}%;background:${["#3b82f6","#f59e0b","#ef4444","#dc2626"][i]}"></div>
+            </div>
+            <span class="breakdown-bar-val">${v}</span>
+          </div>
+        `).join("")}
+      </div>
+    </div>
+  </div>`;
+}
+
+function buildTimelinePanel(snap, metrics) {
+  // compute trend arrows for current snapshot vs previous
+  const idx = state.selectedSnapshot;
+  const prev = idx > 0 ? SNAPSHOTS[idx - 1] : null;
+  const prevM = prev ? computeMetrics(prev, state.baseline) : null;
+
+  function trendArrow(curr, prev, higherIsBetter) {
+    if (!prev) return "";
+    const diff = curr - prev;
+    if (Math.abs(diff) < 0.1) return '<span class="trend-neutral">→</span>';
+    const up = diff > 0;
+    const good = higherIsBetter ? up : !up;
+    const arrow = up ? "↑" : "↓";
+    return `<span class="${good ? "trend-up-good" : "trend-up-bad"}">${arrow}</span>`;
+  }
+
+  const rows = [
+    { label: "Resolution Rate", curr: fmtPct(metrics.resolutionRate), arrow: trendArrow(metrics.resolutionRate, prevM?.resolutionRate, true) },
+    { label: "Backlog Rate", curr: fmtPct(metrics.backlogRate), arrow: trendArrow(metrics.backlogRate, prevM?.backlogRate, false) },
+    { label: "Reopen Rate", curr: fmtPct(metrics.reopenRate), arrow: trendArrow(metrics.reopenRate, prevM?.reopenRate, false) },
+    { label: "High Severity %", curr: fmtPct(metrics.highSevRate), arrow: trendArrow(metrics.highSevRate, prevM?.highSevRate, false) },
+  ];
+
+  return `
+  <div class="timeline-panel">
+    <div class="timeline-toggle-header" id="timelineToggle">
+      <div class="panel-title" style="margin-bottom:0">Trend Over Time</div>
+      <span class="timeline-expand-icon ${state.timelineExpanded ? "open" : ""}" id="timelineExpandIcon">&#9660;</span>
+    </div>
+    <div class="timeline-content ${state.timelineExpanded ? "expanded" : "collapsed"}" id="timelineContent">
+      <div style="padding-top:14px">
+        <div class="chart-container medium">
+          <canvas id="trendChart"></canvas>
+        </div>
+        <div class="flex items-center gap-2 flex-wrap mt-2" style="margin-top:10px">
+          ${rows.map(r => `
+            <div class="pill blue" style="gap:4px">
+              <span class="pill-label">${r.label}</span>
+              <strong>${r.curr}</strong>
+              ${r.arrow}
+            </div>
+          `).join("")}
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function buildTimelineView() {
+  const filtered = getFilteredSnapshots();
+  const miniCards = filtered.map((s, i) => {
+    const m = computeMetrics(s, state.baseline);
+    const rc = getReadinessClass(m.readiness);
+    const rcColor = rc === "ready" ? "#22c55e" : rc === "caution" ? "#f59e0b" : "#ef4444";
+    const isSelected = SNAPSHOTS.indexOf(s) === state.selectedSnapshot;
+    return `
+    <div class="snapshot-mini-card ${isSelected ? "selected" : ""}" data-snap-idx="${SNAPSHOTS.indexOf(s)}">
+      <div class="mini-card-date">${s.reportDate}</div>
+      <div class="mini-card-env"><span class="env-badge ${getEnvBadgeClass(s.environment)}">${s.environment}</span> &nbsp; ${s.phase}</div>
+      <div class="mini-card-metrics">
+        <div class="mini-card-metric">
+          <span class="mini-card-metric-label">Resolution</span>
+          <span class="mini-card-metric-value" style="color:${getPillClass("resolution",m.resolutionRate)==="green"?"#22c55e":getPillClass("resolution",m.resolutionRate)==="yellow"?"#f59e0b":"#ef4444"}">${fmtPct(m.resolutionRate)}</span>
+        </div>
+        <div class="mini-card-metric">
+          <span class="mini-card-metric-label">Backlog</span>
+          <span class="mini-card-metric-value">${fmtPct(m.backlogRate)}</span>
+        </div>
+        <div class="mini-card-metric">
+          <span class="mini-card-metric-label">Readiness</span>
+          <span class="mini-card-metric-value" style="color:${rcColor}">${m.readiness}</span>
+        </div>
+      </div>
+    </div>`;
+  }).join("");
+
+  return `
+  <div class="timeline-full">
+    <div class="panel-title">Timeline — All Metrics</div>
+    <div class="timeline-full-chart">
+      <canvas id="timelineFullChart"></canvas>
+    </div>
+    <div class="legend-row" id="timelineLegend"></div>
+  </div>
+  <div class="snapshot-mini-cards">${miniCards}</div>`;
+}
+
+// ─────────────────────────────────────────────
+// BIND EVENTS
+// ─────────────────────────────────────────────
+function bindEvents() {
+  // Snapshot select
+  const snapSel = document.getElementById("snapshotSelect");
+  if (snapSel) snapSel.addEventListener("change", e => { state.selectedSnapshot = +e.target.value; render(); });
+
+  // Compare mode
+  const compareBtn = document.getElementById("compareModeBtn");
+  if (compareBtn) compareBtn.addEventListener("click", () => { state.compareMode = !state.compareMode; render(); });
+
+  // Compare select
+  const compareSel = document.getElementById("compareSelect");
+  if (compareSel) compareSel.addEventListener("change", e => { state.compareSnapshot = +e.target.value; render(); });
+
+  // Baseline
+  document.querySelectorAll("[data-baseline]").forEach(btn => {
+    btn.addEventListener("click", () => { state.baseline = btn.dataset.baseline; render(); });
+  });
+
+  // View mode
+  document.querySelectorAll("[data-view]").forEach(btn => {
+    btn.addEventListener("click", () => { state.viewMode = btn.dataset.view; render(); });
+  });
+
+  // Phase chips
+  document.querySelectorAll("[data-phase]").forEach(chip => {
+    chip.addEventListener("click", () => {
+      const phase = chip.dataset.phase;
+      const idx = state.phaseFilter.indexOf(phase);
+      if (idx === -1) state.phaseFilter.push(phase);
+      else state.phaseFilter.splice(idx, 1);
+      render();
+    });
+  });
+
+  // Risk only
+  const riskBtn = document.getElementById("riskOnlyBtn");
+  if (riskBtn) riskBtn.addEventListener("click", () => { state.riskOnly = !state.riskOnly; render(); });
+
+  // Timeline toggle
+  const timelineToggle = document.getElementById("timelineToggle");
+  if (timelineToggle) {
+    timelineToggle.addEventListener("click", () => {
+      state.timelineExpanded = !state.timelineExpanded;
+      const icon = document.getElementById("timelineExpandIcon");
+      const content = document.getElementById("timelineContent");
+      if (icon) icon.classList.toggle("open", state.timelineExpanded);
+      if (content) {
+        content.classList.toggle("expanded", state.timelineExpanded);
+        content.classList.toggle("collapsed", !state.timelineExpanded);
+      }
+    });
+  }
+
+  // KPI card drilldowns
+  document.querySelectorAll("[data-drilldown]").forEach(card => {
+    card.addEventListener("click", () => {
+      const type = card.dataset.drilldown;
+      openDrilldown(type);
+    });
+  });
+
+  // Snapshot mini cards (timeline view)
+  document.querySelectorAll("[data-snap-idx]").forEach(card => {
+    card.addEventListener("click", () => {
+      state.selectedSnapshot = +card.dataset.snapIdx;
+      render();
+    });
+  });
+
+  // Modal close
+  const overlay = document.getElementById("modalOverlay");
+  if (overlay) {
+    overlay.addEventListener("click", e => {
+      if (e.target === overlay) closeDrilldown();
+    });
+  }
+
+  document.addEventListener("keydown", e => {
+    if (e.key === "Escape") closeDrilldown();
+  }, { once: true });
+}
+
+// ─────────────────────────────────────────────
+// DRILLDOWN MODAL
+// ─────────────────────────────────────────────
+function openDrilldown(type) {
+  state.drilldown = type;
+  const overlay = document.getElementById("modalOverlay");
+  const content = document.getElementById("modalContent");
+
+  const snap = SNAPSHOTS[state.selectedSnapshot];
+  const metrics = computeMetrics(snap, state.baseline);
+  const prevSnap = state.selectedSnapshot > 0 ? SNAPSHOTS[state.selectedSnapshot - 1] : null;
+  const prevMetrics = prevSnap ? computeMetrics(prevSnap, state.baseline) : null;
+
+  content.innerHTML = buildDrilldownContent(type, snap, metrics, prevSnap, prevMetrics);
+  overlay.classList.add("open");
+
+  // Bind close button
+  const closeBtn = document.getElementById("modalCloseBtn");
+  if (closeBtn) closeBtn.addEventListener("click", closeDrilldown);
+
+  // Render modal chart
+  requestAnimationFrame(() => renderModalChart(type, snap, metrics));
+}
+
+function closeDrilldown() {
+  state.drilldown = null;
+  const overlay = document.getElementById("modalOverlay");
+  overlay.classList.remove("open");
+  destroyChart("modalChart");
+}
+
+function buildDrilldownContent(type, snap, metrics, prevSnap, prevMetrics) {
+  const titles = {
+    reopen: "Reopen Analysis",
+    backlog: "Backlog Analysis",
+    high_severity: "High Severity Analysis",
+    passed: "Resolved / Passed Analysis"
+  };
+
+  const content = {
+    reopen: buildReopenDrilldown(snap, metrics, prevSnap, prevMetrics),
+    backlog: buildBacklogDrilldown(snap, metrics, prevSnap, prevMetrics),
+    high_severity: buildHighSevDrilldown(snap, metrics, prevSnap, prevMetrics),
+    passed: buildPassedDrilldown(snap, metrics, prevSnap, prevMetrics),
+  };
+
+  return `
+  <div class="modal-header">
+    <div class="modal-title">${titles[type] || type}</div>
+    <div class="modal-close" id="modalCloseBtn">&#10005;</div>
+  </div>
+  <div style="font-size:12px;color:var(--subtext);margin-bottom:14px">
+    ${snap.reportDate} &nbsp;|&nbsp; <span class="env-badge ${getEnvBadgeClass(snap.environment)}">${snap.environment}</span> &nbsp;|&nbsp; ${snap.phase}
+  </div>
+  ${content[type] || ""}`;
+}
+
+function buildReopenDrilldown(snap, metrics, prevSnap, prevMetrics) {
+  const prevTrend = prevSnap ? `${prevSnap.reopen} → ${snap.reopen}` : "N/A";
+  const diff = prevSnap ? snap.reopen - prevSnap.reopen : null;
+  const diffLabel = diff !== null ? (diff > 0 ? `<span style="color:#f87171">+${diff} worse</span>` : diff < 0 ? `<span style="color:#4ade80">${diff} better</span>` : `<span style="color:var(--subtext)">no change</span>`) : "";
+
+  return `
+  <div class="modal-section">
+    <div class="modal-stat-grid">
+      <div class="modal-stat-box">
+        <div class="modal-stat-box-value" style="color:#f59e0b">${snap.reopen}</div>
+        <div class="modal-stat-box-label">Reopen Count</div>
+      </div>
+      <div class="modal-stat-box">
+        <div class="modal-stat-box-value">${fmtPct(metrics.reopenRate)}</div>
+        <div class="modal-stat-box-label">Reopen Rate</div>
+      </div>
+      <div class="modal-stat-box">
+        <div class="modal-stat-box-value">${snap.passed + snap.reopen}</div>
+        <div class="modal-stat-box-label">Reopen Denominator</div>
+      </div>
+    </div>
+    <div class="modal-section-title">Reopen Breakdown by Times</div>
+    <table class="modal-table">
+      <thead><tr><th>Reopen</th><th>Count</th><th>% of Total Reopen</th></tr></thead>
+      <tbody>
+        ${snap.reopenBreakdown.map((v, i) => `
+          <tr>
+            <td>Reopened ${i+1}x (R${i+1})</td>
+            <td><strong>${v}</strong></td>
+            <td>${snap.reopen > 0 ? fmtPct(v/snap.reopen*100) : "0%"}</td>
+          </tr>
+        `).join("")}
+      </tbody>
+    </table>
+  </div>
+  <div class="modal-section">
+    <div class="modal-section-title">Trend vs Previous Snapshot</div>
+    <div class="modal-trend">
+      <span class="modal-trend-label">Reopen count trend:</span>
+      <span class="modal-trend-value">${prevTrend}</span>
+      <span>${diffLabel}</span>
+    </div>
+    ${prevSnap ? `
+    <div class="modal-trend mt-2">
+      <span class="modal-trend-label">Reopen rate trend:</span>
+      <span class="modal-trend-value">${fmtPct(prevMetrics.reopenRate)} → ${fmtPct(metrics.reopenRate)}</span>
+    </div>` : ""}
+  </div>
+  <div class="modal-section">
+    <div class="modal-section-title">Reopen Chart</div>
+    <div class="modal-chart-container"><canvas id="modalChart"></canvas></div>
+  </div>`;
+}
+
+function buildBacklogDrilldown(snap, metrics, prevSnap, prevMetrics) {
+  return `
+  <div class="modal-section">
+    <div class="modal-stat-grid">
+      <div class="modal-stat-box">
+        <div class="modal-stat-box-value" style="color:#3b82f6">${snap.open}</div>
+        <div class="modal-stat-box-label">Open</div>
+      </div>
+      <div class="modal-stat-box">
+        <div class="modal-stat-box-value" style="color:#f59e0b">${snap.reopen}</div>
+        <div class="modal-stat-box-label">Reopen</div>
+      </div>
+      <div class="modal-stat-box">
+        <div class="modal-stat-box-value" style="color:#94a3b8">${snap.toConfirm}</div>
+        <div class="modal-stat-box-label">To Confirm</div>
+      </div>
+    </div>
+    <div class="modal-trend">
+      <span class="modal-trend-label">Total Pending:</span>
+      <span class="modal-trend-value">${metrics.pending}</span>
+      <span style="margin-left:8px;color:var(--subtext)">Backlog Rate:</span>
+      <span class="modal-trend-value" style="color:${metrics.backlogRate > 40 ? "#ef4444" : metrics.backlogRate > 20 ? "#f59e0b" : "#22c55e"}">${fmtPct(metrics.backlogRate)}</span>
+    </div>
+    ${prevSnap ? `
+    <div class="modal-trend mt-2">
+      <span class="modal-trend-label">Backlog rate trend:</span>
+      <span class="modal-trend-value">${fmtPct(prevMetrics.backlogRate)} → ${fmtPct(metrics.backlogRate)}</span>
+    </div>` : ""}
+  </div>
+  <div class="modal-section">
+    <div class="modal-section-title">Backlog Composition</div>
+    <div class="modal-chart-container"><canvas id="modalChart"></canvas></div>
+  </div>
+  <div class="modal-section">
+    <div class="modal-section-title">Breakdown</div>
+    <div class="breakdown-bars">
+      ${[["Open", snap.open, "#3b82f6"], ["Reopen", snap.reopen, "#f59e0b"], ["To Confirm", snap.toConfirm, "#94a3b8"]].map(([label, val, color]) => `
+        <div class="breakdown-bar-row">
+          <span class="breakdown-bar-label" style="width:70px">${label}</span>
+          <div class="breakdown-bar-track">
+            <div class="breakdown-bar-fill" style="width:${metrics.pending > 0 ? (val/metrics.pending*100) : 0}%;background:${color}"></div>
+          </div>
+          <span class="breakdown-bar-val" style="width:30px">${val}</span>
+        </div>
+      `).join("")}
+    </div>
+  </div>`;
+}
+
+function buildHighSevDrilldown(snap, metrics, prevSnap, prevMetrics) {
+  return `
+  <div class="modal-section">
+    <div class="modal-stat-grid">
+      <div class="modal-stat-box">
+        <div class="modal-stat-box-value" style="color:#ef4444">${snap.severityHigh}</div>
+        <div class="modal-stat-box-label">High</div>
+      </div>
+      <div class="modal-stat-box">
+        <div class="modal-stat-box-value" style="color:#f59e0b">${snap.severityMedium}</div>
+        <div class="modal-stat-box-label">Medium</div>
+      </div>
+      <div class="modal-stat-box">
+        <div class="modal-stat-box-value" style="color:#22c55e">${snap.severityLow}</div>
+        <div class="modal-stat-box-label">Low</div>
+      </div>
+    </div>
+    <div class="modal-trend">
+      <span class="modal-trend-label">High Severity Rate:</span>
+      <span class="modal-trend-value" style="color:${metrics.highSevRate > 50 ? "#ef4444" : metrics.highSevRate > 25 ? "#f59e0b" : "#22c55e"}">${fmtPct(metrics.highSevRate)}</span>
+      <span style="margin-left:8px;color:var(--subtext)">Total severity issues: ${metrics.sevTotal}</span>
+    </div>
+    ${prevSnap ? `
+    <div class="modal-trend mt-2">
+      <span class="modal-trend-label">High sev rate trend:</span>
+      <span class="modal-trend-value">${fmtPct(prevMetrics.highSevRate)} → ${fmtPct(metrics.highSevRate)}</span>
+    </div>` : ""}
+  </div>
+  <div class="modal-section">
+    <div class="modal-section-title">Severity Distribution</div>
+    <div class="modal-chart-container"><canvas id="modalChart"></canvas></div>
+  </div>`;
+}
+
+function buildPassedDrilldown(snap, metrics, prevSnap, prevMetrics) {
+  const totalPrb = snap.passedReopenBreakdown.reduce((a, b) => a + b, 0);
+  return `
+  <div class="modal-section">
+    <div class="modal-stat-grid">
+      <div class="modal-stat-box">
+        <div class="modal-stat-box-value" style="color:#22c55e">${snap.passed}</div>
+        <div class="modal-stat-box-label">Passed</div>
+      </div>
+      <div class="modal-stat-box">
+        <div class="modal-stat-box-value">${snap.closed}</div>
+        <div class="modal-stat-box-label">Closed</div>
+      </div>
+      <div class="modal-stat-box">
+        <div class="modal-stat-box-value">${snap.cancelled}</div>
+        <div class="modal-stat-box-label">Cancelled</div>
+      </div>
+    </div>
+    <div class="modal-trend">
+      <span class="modal-trend-label">Resolution Rate:</span>
+      <span class="modal-trend-value" style="color:${metrics.resolutionRate >= 80 ? "#22c55e" : metrics.resolutionRate >= 60 ? "#f59e0b" : "#ef4444"}">${fmtPct(metrics.resolutionRate)}</span>
+      <span style="margin-left:8px;color:var(--subtext)">Total resolved: ${metrics.resolved}</span>
+    </div>
+    ${prevSnap ? `
+    <div class="modal-trend mt-2">
+      <span class="modal-trend-label">Resolution rate trend:</span>
+      <span class="modal-trend-value">${fmtPct(prevMetrics.resolutionRate)} → ${fmtPct(metrics.resolutionRate)}</span>
+    </div>` : ""}
+  </div>
+  <div class="modal-section">
+    <div class="modal-section-title">Passed Issues Previously Reopened</div>
+    <table class="modal-table">
+      <thead><tr><th>Reopen History</th><th>Count</th><th>% of Passed</th></tr></thead>
+      <tbody>
+        ${snap.passedReopenBreakdown.map((v, i) => `
+          <tr>
+            <td>Passed after ${i+1} reopen(s)</td>
+            <td><strong>${v}</strong></td>
+            <td>${snap.passed > 0 ? fmtPct(v/snap.passed*100) : "0%"}</td>
+          </tr>
+        `).join("")}
+        <tr style="font-weight:700">
+          <td>Total with reopen history</td>
+          <td>${totalPrb}</td>
+          <td>${snap.passed > 0 ? fmtPct(totalPrb/snap.passed*100) : "0%"}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="modal-section">
+    <div class="modal-section-title">Resolution Chart</div>
+    <div class="modal-chart-container"><canvas id="modalChart"></canvas></div>
+  </div>`;
+}
+
+// ─────────────────────────────────────────────
+// CHART RENDERING
+// ─────────────────────────────────────────────
+const CHART_COLORS = {
+  passed: "#22c55e",
+  closed: "#3b82f6",
+  cancelled: "#94a3b8",
+  open: "#f59e0b",
+  reopen: "#ef4444",
+  toConfirm: "#8b5cf6",
+  high: "#ef4444",
+  medium: "#f59e0b",
+  low: "#22c55e",
+};
+
+Chart.defaults.color = "#94a3b8";
+Chart.defaults.borderColor = "#334155";
+Chart.defaults.font.family = "'Segoe UI', system-ui, sans-serif";
+
+function renderCharts(snap, metrics, cSnap, cMetrics) {
+  if (state.viewMode === "snapshot") {
+    renderDoughnutChart(snap);
+    renderSeverityChart(snap, metrics);
+    if (state.timelineExpanded) renderTrendChart();
+  } else {
+    renderTimelineFullChart();
+  }
+}
+
+function renderDoughnutChart(snap) {
+  const el = document.getElementById("doughnutChart");
+  if (!el) return;
+  destroyChart("doughnutChart");
+
+  const data = [
+    { label: "Passed", value: snap.passed, color: CHART_COLORS.passed },
+    { label: "Closed", value: snap.closed, color: CHART_COLORS.closed },
+    { label: "Cancelled", value: snap.cancelled, color: CHART_COLORS.cancelled },
+    { label: "Open", value: snap.open, color: CHART_COLORS.open },
+    { label: "Reopen", value: snap.reopen, color: CHART_COLORS.reopen },
+    { label: "To Confirm", value: snap.toConfirm, color: CHART_COLORS.toConfirm },
+  ].filter(d => d.value > 0);
+
+  const legend = document.getElementById("doughnutLegend");
+  if (legend) {
+    legend.innerHTML = data.map(d => `
+      <div class="doughnut-legend-item">
+        <div class="doughnut-legend-dot" style="background:${d.color}"></div>
+        <span>${d.label}</span>
+        <span class="doughnut-legend-val">${d.value}</span>
+      </div>
+    `).join("");
+  }
+
+  const chart = new Chart(el, {
+    type: "doughnut",
+    data: {
+      labels: data.map(d => d.label),
+      datasets: [{
+        data: data.map(d => d.value),
+        backgroundColor: data.map(d => d.color),
+        borderColor: "#1e293b",
+        borderWidth: 2,
+        hoverBorderWidth: 3,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => ` ${ctx.label}: ${ctx.raw} (${(ctx.raw/snap.total*100).toFixed(1)}%)`
+          }
+        }
+      },
+      cutout: "65%",
+    }
+  });
+  registerChart("doughnutChart", chart);
+}
+
+function renderSeverityChart(snap, metrics) {
+  const el = document.getElementById("severityChart");
+  if (!el) return;
+  destroyChart("severityChart");
+
+  const chart = new Chart(el, {
+    type: "bar",
+    data: {
+      labels: ["High", "Medium", "Low"],
+      datasets: [{
+        label: "Count",
+        data: [snap.severityHigh, snap.severityMedium, snap.severityLow],
+        backgroundColor: [CHART_COLORS.high, CHART_COLORS.medium, CHART_COLORS.low],
+        borderColor: "transparent",
+        borderRadius: 4,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      indexAxis: "y",
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => ` ${ctx.raw} issues (${metrics.sevTotal > 0 ? (ctx.raw/metrics.sevTotal*100).toFixed(1) : 0}%)`
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { color: "#334155" },
+          ticks: { color: "#94a3b8", font: { size: 11 } },
+          border: { display: false }
+        },
+        y: {
+          grid: { display: false },
+          ticks: { color: "#94a3b8", font: { size: 11 } },
+          border: { display: false }
+        }
+      }
+    }
+  });
+  registerChart("severityChart", chart);
+}
+
+function renderTrendChart() {
+  const el = document.getElementById("trendChart");
+  if (!el) return;
+  destroyChart("trendChart");
+
+  const filtered = getFilteredSnapshots();
+  if (filtered.length === 0) return;
+
+  const labels = filtered.map(s => s.reportDate);
+  const datasets = [
+    { label: "Resolution Rate", data: filtered.map(s => +computeMetrics(s, state.baseline).resolutionRate.toFixed(1)), borderColor: "#22c55e", backgroundColor: "rgba(34,197,94,0.1)", tension: 0.3 },
+    { label: "Backlog Rate", data: filtered.map(s => +computeMetrics(s, state.baseline).backlogRate.toFixed(1)), borderColor: "#ef4444", backgroundColor: "rgba(239,68,68,0.1)", tension: 0.3 },
+    { label: "Reopen Rate", data: filtered.map(s => +computeMetrics(s, state.baseline).reopenRate.toFixed(1)), borderColor: "#f59e0b", backgroundColor: "rgba(245,158,11,0.1)", tension: 0.3 },
+    { label: "High Sev %", data: filtered.map(s => +computeMetrics(s, state.baseline).highSevRate.toFixed(1)), borderColor: "#8b5cf6", backgroundColor: "rgba(139,92,246,0.1)", tension: 0.3 },
+  ];
+
+  const chart = new Chart(el, {
+    type: "line",
+    data: { labels, datasets: datasets.map(d => ({ ...d, pointRadius: 5, pointHoverRadius: 7, fill: true, borderWidth: 2 })) },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: "index", intersect: false },
+      plugins: {
+        legend: { display: true, position: "top", labels: { usePointStyle: true, pointStyle: "circle", padding: 14, font: { size: 11 } } },
+        tooltip: {
+          callbacks: { label: ctx => ` ${ctx.dataset.label}: ${ctx.raw}%` }
+        }
+      },
+      scales: {
+        x: { grid: { color: "#334155" }, ticks: { color: "#94a3b8", font: { size: 11 } }, border: { display: false } },
+        y: {
+          grid: { color: "#334155" },
+          ticks: { color: "#94a3b8", font: { size: 11 }, callback: v => v + "%" },
+          border: { display: false },
+          min: 0,
+          max: 110,
+        }
+      }
+    }
+  });
+  registerChart("trendChart", chart);
+}
+
+function renderTimelineFullChart() {
+  const el = document.getElementById("timelineFullChart");
+  if (!el) return;
+  destroyChart("timelineFullChart");
+
+  const filtered = getFilteredSnapshots();
+  if (filtered.length === 0) return;
+
+  const labels = filtered.map(s => s.reportDate);
+  const colors = ["#22c55e", "#ef4444", "#f59e0b", "#8b5cf6", "#3b82f6", "#06b6d4"];
+  const metricDefs = [
+    { label: "Resolution Rate %", fn: m => +m.resolutionRate.toFixed(1) },
+    { label: "Backlog Rate %", fn: m => +m.backlogRate.toFixed(1) },
+    { label: "Reopen Rate %", fn: m => +m.reopenRate.toFixed(1) },
+    { label: "High Severity %", fn: m => +m.highSevRate.toFixed(1) },
+  ];
+
+  const legend = document.getElementById("timelineLegend");
+  if (legend) {
+    legend.innerHTML = metricDefs.map((d, i) => `
+      <div class="legend-item">
+        <div class="legend-dot" style="background:${colors[i]}"></div>
+        <span>${d.label}</span>
+      </div>
+    `).join("");
+  }
+
+  const datasets = metricDefs.map((def, i) => ({
+    label: def.label,
+    data: filtered.map(s => def.fn(computeMetrics(s, state.baseline))),
+    borderColor: colors[i],
+    backgroundColor: colors[i] + "20",
+    pointRadius: 6,
+    pointHoverRadius: 9,
+    fill: false,
+    tension: 0.3,
+    borderWidth: 2.5,
+  }));
+
+  const chart = new Chart(el, {
+    type: "line",
+    data: { labels, datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: "index", intersect: false },
+      plugins: {
+        legend: { display: true, position: "top", labels: { usePointStyle: true, pointStyle: "circle", padding: 16, font: { size: 12 } } },
+        tooltip: { callbacks: { label: ctx => ` ${ctx.dataset.label}: ${ctx.raw}%` } }
+      },
+      scales: {
+        x: { grid: { color: "#334155" }, ticks: { color: "#94a3b8", font: { size: 12 } }, border: { display: false } },
+        y: {
+          grid: { color: "#334155" },
+          ticks: { color: "#94a3b8", font: { size: 11 }, callback: v => v + "%" },
+          border: { display: false },
+          min: 0,
+          max: 110,
+        }
+      }
+    }
+  });
+  registerChart("timelineFullChart", chart);
+}
+
+function renderModalChart(type, snap, metrics) {
+  const el = document.getElementById("modalChart");
+  if (!el) return;
+  destroyChart("modalChart");
+
+  let chart;
+
+  if (type === "reopen") {
+    const labels = snap.reopenBreakdown.map((_, i) => `R${i+1}`);
+    chart = new Chart(el, {
+      type: "bar",
+      data: {
+        labels,
+        datasets: [{
+          label: "Issues reopened",
+          data: snap.reopenBreakdown,
+          backgroundColor: ["#3b82f6", "#f59e0b", "#ef4444", "#dc2626"],
+          borderRadius: 5,
+          borderSkipped: false,
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { display: false }, ticks: { color: "#94a3b8" }, border: { display: false } },
+          y: { grid: { color: "#334155" }, ticks: { color: "#94a3b8", stepSize: 1 }, border: { display: false }, min: 0 }
+        }
+      }
+    });
+  } else if (type === "backlog") {
+    chart = new Chart(el, {
+      type: "doughnut",
+      data: {
+        labels: ["Open", "Reopen", "To Confirm"],
+        datasets: [{
+          data: [snap.open, snap.reopen, snap.toConfirm],
+          backgroundColor: ["#3b82f6", "#f59e0b", "#8b5cf6"],
+          borderColor: "#1e293b",
+          borderWidth: 2,
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { display: true, position: "right", labels: { usePointStyle: true, pointStyle: "circle", font: { size: 11 }, padding: 10 } }
+        },
+        cutout: "60%",
+      }
+    });
+  } else if (type === "high_severity") {
+    chart = new Chart(el, {
+      type: "doughnut",
+      data: {
+        labels: ["High", "Medium", "Low"],
+        datasets: [{
+          data: [snap.severityHigh, snap.severityMedium, snap.severityLow],
+          backgroundColor: [CHART_COLORS.high, CHART_COLORS.medium, CHART_COLORS.low],
+          borderColor: "#1e293b",
+          borderWidth: 2,
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { display: true, position: "right", labels: { usePointStyle: true, pointStyle: "circle", font: { size: 11 }, padding: 10 } },
+          tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.raw} (${metrics.sevTotal > 0 ? (ctx.raw/metrics.sevTotal*100).toFixed(1) : 0}%)` } }
+        },
+        cutout: "60%",
+      }
+    });
+  } else if (type === "passed") {
+    chart = new Chart(el, {
+      type: "bar",
+      data: {
+        labels: ["Passed", "Closed", "Cancelled"],
+        datasets: [{
+          label: "Count",
+          data: [snap.passed, snap.closed, snap.cancelled],
+          backgroundColor: [CHART_COLORS.passed, CHART_COLORS.closed, CHART_COLORS.cancelled],
+          borderRadius: 5,
+          borderSkipped: false,
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { display: false }, ticks: { color: "#94a3b8" }, border: { display: false } },
+          y: { grid: { color: "#334155" }, ticks: { color: "#94a3b8" }, border: { display: false }, min: 0 }
+        }
+      }
+    });
+  }
+
+  if (chart) registerChart("modalChart", chart);
+}
+
+// ─────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────
+render();
+</script>
+</body>
+</html>
