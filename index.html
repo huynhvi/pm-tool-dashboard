@@ -824,6 +824,170 @@
   .gap-2 { gap: 8px; }
   .flex-wrap { flex-wrap: wrap; }
 
+  /* ── RELOAD BUTTON ── */
+  .reload-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+    white-space: nowrap;
+  }
+  .reload-btn:hover { background: var(--card-hover); border-color: var(--accent); color: var(--accent); }
+  .reload-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+  .reload-btn .reload-icon { display: inline-block; font-size: 15px; }
+  .reload-btn.loading .reload-icon { animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── SYSTEM HEADLINE ── */
+  .system-headline {
+    font-size: 13px;
+    margin-top: 10px;
+    padding: 9px 14px;
+    background: var(--surface2);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 6px 6px 0;
+    color: var(--text);
+    line-height: 1.5;
+  }
+
+  /* ── PILL DELTA ── */
+  .pill-delta {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 4px;
+    border-radius: 3px;
+    margin-left: 2px;
+  }
+  .pill-delta.better { background: rgba(34,197,94,0.2); color: #4ade80; }
+  .pill-delta.worse  { background: rgba(239,68,68,0.2);  color: #f87171; }
+  .pill-delta.neutral { background: rgba(148,163,184,0.15); color: #94a3b8; }
+
+  /* ── TOP RISK CALLOUT ── */
+  .top-risk-callout {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px 16px;
+    margin-bottom: 14px;
+    background: rgba(239,68,68,0.06);
+    border: 1px solid rgba(239,68,68,0.25);
+    border-left: 4px solid #ef4444;
+    border-radius: 0 8px 8px 0;
+    font-size: 13px;
+  }
+  .top-risk-callout.medium {
+    background: rgba(245,158,11,0.06);
+    border-color: rgba(245,158,11,0.25);
+    border-left-color: #f59e0b;
+  }
+
+  /* ── STABILITY BADGE ── */
+  .stability-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    letter-spacing: 0.3px;
+  }
+  .stability-badge.stable   { background: rgba(34,197,94,0.15);  color: #4ade80;  border: 1px solid rgba(34,197,94,0.3); }
+  .stability-badge.recovering { background: rgba(245,158,11,0.15); color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
+  .stability-badge.unstable { background: rgba(239,68,68,0.15);  color: #f87171;  border: 1px solid rgba(239,68,68,0.3); }
+
+  /* ── PHASE FILTER NOTICE ── */
+  .phase-filter-notice {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 14px;
+    margin-bottom: 12px;
+    background: rgba(59,130,246,0.07);
+    border: 1px solid rgba(59,130,246,0.25);
+    border-radius: 6px;
+    font-size: 12px;
+    color: #60a5fa;
+  }
+  .phase-filter-notice a {
+    color: #60a5fa;
+    text-decoration: underline;
+    cursor: pointer;
+    background: none;
+    border: none;
+    font: inherit;
+    padding: 0;
+  }
+
+  .reset-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 12px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--subtext);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+    white-space: nowrap;
+  }
+  .reset-btn:hover { background: var(--surface2); border-color: var(--warning); color: var(--warning); }
+
+  .quick-compare-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 10px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--subtext);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+    white-space: nowrap;
+  }
+  .quick-compare-btn:hover { background: var(--surface2); border-color: var(--accent); color: var(--accent); }
+  .quick-compare-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+  .mro-split {
+    display: flex;
+    gap: 8px;
+    margin-top: 6px;
+    font-size: 11px;
+  }
+  .mro-split-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: var(--surface2);
+    border-radius: 5px;
+    padding: 4px 8px;
+    flex: 1;
+  }
+  .mro-split-value { font-weight: 700; font-size: 13px; color: var(--text); }
+  .mro-split-label { font-size: 10px; color: var(--subtext); margin-top: 1px; }
+
+  .data-source-tag {
+    font-size: 11px;
+    color: var(--subtext);
+    margin-top: 4px;
+  }
+
   /* doughnut legend */
   .doughnut-legend {
     display: grid;
@@ -863,7 +1027,7 @@
 // ─────────────────────────────────────────────
 // DATA
 // ─────────────────────────────────────────────
-const SNAPSHOTS = [
+let SNAPSHOTS = [
   {
     id: "23feb2026", reportDate: "23 Feb 2026", environment: "UAT", phase: "After Soft Launch 01",
     total: 224, beforeMRO: 208, afterMRO: 16,
@@ -896,7 +1060,217 @@ const SNAPSHOTS = [
   }
 ];
 
-const PHASES = ["After Soft Launch 01", "After Soft Launch 02"];
+let PHASES = ["After Soft Launch 01", "After Soft Launch 02"];
+
+// ─────────────────────────────────────────────
+// MARKDOWN PARSER
+// ─────────────────────────────────────────────
+function parseMarkdownSnapshot(text, filename) {
+  const lines = text.split('\n');
+
+  // Split into named sections by ### headings
+  const sectionMap = {};
+  let curName = '__top__';
+  sectionMap[curName] = [];
+  for (const raw of lines) {
+    if (/^#{2,3}\s/.test(raw)) {
+      curName = raw.replace(/^#+\s*/, '').trim().toLowerCase();
+      sectionMap[curName] = [];
+    } else {
+      sectionMap[curName].push(raw);
+    }
+  }
+
+  function numFrom(str) {
+    if (!str) return 0;
+    const m = String(str).match(/\d+/);
+    return m ? parseInt(m[0]) : 0;
+  }
+
+  function getValue(sLines, key) {
+    const re = new RegExp(`^\\s*-\\s+${key}[^:]*:\\s*(.+)$`, 'i');
+    for (const l of sLines) {
+      const m = l.match(re);
+      if (m) return m[1].trim();
+    }
+    return '';
+  }
+
+  function getNum(sLines, key) { return numFrom(getValue(sLines, key)); }
+
+  // Parse sub-breakdown: items indented under a parent key line
+  // e.g. "- Reopen 1: 23" under "- Passed: 130"
+  function getSubBreakdown(sLines, parentKeyRe, subKeyRe) {
+    const result = [];
+    let inParent = false;
+    for (const l of sLines) {
+      if (!inParent) {
+        if (parentKeyRe.test(l)) inParent = true;
+      } else {
+        const sub = l.match(subKeyRe);
+        if (sub) {
+          const idx = parseInt(sub[1]) - 1;
+          while (result.length <= idx) result.push(0);
+          result[idx] = parseInt(sub[2]);
+        } else if (/^\s{0,1}-\s+\S/.test(l)) {
+          break; // next top-level item ends parent block
+        }
+      }
+    }
+    return result.length > 0 ? result : [0, 0, 0];
+  }
+
+  // Locate sections flexibly
+  function sec(keyword) {
+    const key = Object.keys(sectionMap).find(k => k.includes(keyword));
+    return key ? sectionMap[key] : [];
+  }
+
+  const headerLines = sectionMap['issue report input'] || sectionMap['__top__'] || [];
+
+  // Report date — normalize to "DD Mon YYYY"
+  let reportDate = getValue(headerLines, 'report date').trim();
+  if (!reportDate) {
+    const fm = filename.match(/(\d{1,2})(\w+)(\d{4})/i);
+    if (fm) reportDate = `${fm[1]}${fm[2]}${fm[3]}`;
+  }
+  const months = { jan:'Jan', feb:'Feb', mar:'Mar', apr:'Apr', may:'May', jun:'Jun',
+    jul:'Jul', aug:'Aug', sep:'Sep', oct:'Oct', nov:'Nov', dec:'Dec',
+    january:'Jan', february:'Feb', march:'Mar', april:'Apr', june:'Jun',
+    july:'Jul', august:'Aug', september:'Sep', october:'Oct', november:'Nov', december:'Dec' };
+  reportDate = reportDate.replace(/^(\d{1,2})\s*([A-Za-z]+)\s*(\d{4})$/, (_, d, mon, y) => {
+    return `${d} ${months[mon.toLowerCase()] || mon.slice(0,3)} ${y}`;
+  });
+
+  // Environment — take last token after ":"
+  let environment = getValue(headerLines, 'environment');
+  environment = environment.split(':').pop().trim() || 'PROD';
+
+  // Phase — if pattern "(options): value", extract after "):"
+  let phase = getValue(headerLines, 'phase');
+  if (phase.includes('):')) {
+    phase = phase.split('):').pop().trim();
+  } else if (!phase.includes('Soft') && !phase.includes('Roll') && phase.includes(':')) {
+    phase = phase.split(':').pop().trim();
+  }
+
+  // Overall
+  const overallLines = sec('overall');
+  const total    = getNum(overallLines, 'total issues');
+  const beforeMRO = getNum(overallLines, 'before mass roll');
+  const afterMRO  = getNum(overallLines, 'after mass roll');
+
+  // Resolution
+  const resLines = sec('resolution');
+  const closed    = getNum(resLines, 'closed');
+  const cancelled = getNum(resLines, 'cancelled') || getNum(resLines, 'canceled');
+  const passed    = getNum(resLines, 'passed');
+  const passedReopenBreakdown = getSubBreakdown(
+    resLines,
+    /^\s*-\s+passed\s*:/i,
+    /^\s{2,}-\s+reopen\s+(\d+)\s*:\s*(\d+)/i
+  );
+
+  // Open
+  const openLines = sec('open');
+  const open   = getNum(openLines, 'open');
+  const reopen = getNum(openLines, 'reopen');
+  const reopenBreakdown = getSubBreakdown(
+    openLines,
+    /^\s*-\s+reopen\s*:/i,
+    /^\s{2,}-\s+reopen\s+(\d+)\s*:\s*(\d+)/i
+  );
+
+  // Severity
+  const sevLines = sec('severity');
+  const severityHigh   = getNum(sevLines, 'high');
+  const severityMedium = getNum(sevLines, 'medium');
+  const severityLow    = getNum(sevLines, 'low');
+
+  // Notes + toConfirm
+  const notesLines = sec('notes');
+  const allText = [...notesLines, ...openLines].join('\n');
+  let toConfirm = 0;
+  const tcMatch = allText.match(/to confirm[^:]*:\s*(\d+)/i);
+  if (tcMatch) toConfirm = parseInt(tcMatch[1]);
+
+  const noteTexts = notesLines
+    .filter(l => l.trim().startsWith('-'))
+    .map(l => l.replace(/^\s*-\s*/, '').trim())
+    .filter(l => l && !/^(key issues|special cases)\s*$/i.test(l))
+    .join(' | ');
+
+  const id = filename.replace(/\.md$/i, '').replace(/[^a-z0-9]/gi, '').toLowerCase();
+
+  return { id, reportDate, environment, phase,
+    total, beforeMRO, afterMRO,
+    closed, cancelled, passed, passedReopenBreakdown,
+    open, reopen, reopenBreakdown,
+    severityHigh, severityMedium, severityLow,
+    toConfirm, notes: noteTexts };
+}
+
+// ─────────────────────────────────────────────
+// DATA LOADER
+// ─────────────────────────────────────────────
+const DATA_PATH = 'data/';
+let dataSource = 'built-in';
+
+async function loadSnapshotsFromFiles() {
+  const manifestRes = await fetch(`${DATA_PATH}manifest.json`);
+  if (!manifestRes.ok) throw new Error('manifest not found');
+  const manifest = await manifestRes.json();
+
+  const results = [];
+  for (const filename of manifest.files) {
+    const res = await fetch(`${DATA_PATH}${filename}`);
+    if (!res.ok) { console.warn(`Skipping ${filename} (${res.status})`); continue; }
+    const text = await res.text();
+    results.push(parseMarkdownSnapshot(text, filename));
+  }
+  return results;
+}
+
+async function reloadData() {
+  const btn = document.getElementById('reloadBtn');
+  if (btn) { btn.disabled = true; btn.classList.add('loading'); btn.querySelector('.reload-label').textContent = 'Loading…'; }
+
+  try {
+    const loaded = await loadSnapshotsFromFiles();
+    if (loaded.length > 0) {
+      SNAPSHOTS.length = 0;
+      SNAPSHOTS.push(...loaded);
+      PHASES.length = 0;
+      PHASES.push(...[...new Set(SNAPSHOTS.map(s => s.phase))]);
+      state.selectedSnapshot = SNAPSHOTS.length - 1;
+      state.compareSnapshot  = Math.max(0, SNAPSHOTS.length - 2);
+      state.phaseFilter = [];
+      dataSource = 'files';
+    }
+  } catch (e) {
+    console.warn('Reload failed, keeping current data:', e);
+  }
+
+  render();
+}
+
+async function init() {
+  try {
+    const loaded = await loadSnapshotsFromFiles();
+    if (loaded.length > 0) {
+      SNAPSHOTS.length = 0;
+      SNAPSHOTS.push(...loaded);
+      PHASES.length = 0;
+      PHASES.push(...[...new Set(SNAPSHOTS.map(s => s.phase))]);
+      state.selectedSnapshot = SNAPSHOTS.length - 1;
+      state.compareSnapshot  = Math.max(0, SNAPSHOTS.length - 2);
+      dataSource = 'files';
+    }
+  } catch (e) {
+    console.warn('Auto-load failed, using built-in data:', e);
+  }
+  render();
+}
 
 // ─────────────────────────────────────────────
 // STATE
@@ -1036,13 +1410,51 @@ function buildHTML(snap, metrics, cSnap, cMetrics) {
 
 function buildHeader(snap, metrics) {
   const rc = getReadinessClass(metrics.readiness);
+  const idx = state.selectedSnapshot;
+  const prevSnap = idx > 0 ? SNAPSHOTS[idx - 1] : null;
+  const prevM    = prevSnap ? computeMetrics(prevSnap, state.baseline) : null;
+
+  // Auto-delta helper for pills
+  function pillDelta(curr, prev, type) {
+    if (!prev) return "";
+    const d = getDelta(curr, prev, type);
+    return `<span class="pill-delta ${d.cls}">${d.label}</span>`;
+  }
+  function readinessDelta() {
+    if (!prevM) return "";
+    const order = { "READY": 2, "CAUTION": 1, "NOT READY": 0 };
+    const diff = order[metrics.readiness] - order[prevM.readiness];
+    if (diff > 0) return `<span class="pill-delta better">↑</span>`;
+    if (diff < 0) return `<span class="pill-delta worse">↓</span>`;
+    return `<span class="pill-delta neutral">→</span>`;
+  }
+
   const pills = [
-    { label: "Readiness", value: metrics.readiness, cls: rc === "ready" ? "green" : rc === "caution" ? "yellow" : "red" },
-    { label: "Resolution", value: fmtPct(metrics.resolutionRate), cls: getPillClass("resolution", metrics.resolutionRate) },
-    { label: "Backlog", value: fmtPct(metrics.backlogRate), cls: getPillClass("backlog", metrics.backlogRate) },
-    { label: "Reopen Rate", value: fmtPct(metrics.reopenRate), cls: getPillClass("reopen", metrics.reopenRate) },
-    { label: "High Severity", value: fmtPct(metrics.highSevRate), cls: getPillClass("highsev", metrics.highSevRate) },
+    { label: "Readiness",     value: metrics.readiness,              cls: rc === "ready" ? "green" : rc === "caution" ? "yellow" : "red", delta: readinessDelta() },
+    { label: "Resolution",    value: fmtPct(metrics.resolutionRate),  cls: getPillClass("resolution", metrics.resolutionRate), delta: prevM ? pillDelta(metrics.resolutionRate, prevM.resolutionRate, "resolution") : "" },
+    { label: "Backlog",       value: fmtPct(metrics.backlogRate),     cls: getPillClass("backlog",     metrics.backlogRate),     delta: prevM ? pillDelta(metrics.backlogRate,    prevM.backlogRate,    "backlog")     : "" },
+    { label: "Reopen Rate",   value: fmtPct(metrics.reopenRate),      cls: getPillClass("reopen",      metrics.reopenRate),      delta: prevM ? pillDelta(metrics.reopenRate,     prevM.reopenRate,     "reopen")      : "" },
+    { label: "High Severity", value: fmtPct(metrics.highSevRate),     cls: getPillClass("highsev",     metrics.highSevRate),     delta: prevM ? pillDelta(metrics.highSevRate,    prevM.highSevRate,    "highsev")     : "" },
   ];
+
+  // "vs Previous" summary pill
+  const vsPrevPill = prevM ? (() => {
+    const resDiff  = metrics.resolutionRate - prevM.resolutionRate;
+    const blDiff   = metrics.backlogRate    - prevM.backlogRate;
+    const resArrow = resDiff > 0.5 ? "↑" : resDiff < -0.5 ? "↓" : "→";
+    const blArrow  = blDiff  < -0.5 ? "↓" : blDiff  > 0.5  ? "↑" : "→";
+    const resGood  = resDiff > 0.5;
+    const blGood   = blDiff  < -0.5;
+    const overallGood = resGood && blGood;
+    const overallBad  = resDiff < -0.5 && blDiff > 0.5;
+    const cls = overallGood ? "green" : overallBad ? "red" : "yellow";
+    return `<div class="pill ${cls}" style="gap:5px">
+      <span class="pill-label">vs ${prevSnap.reportDate}</span>
+      <span>Res ${resArrow}${Math.abs(resDiff).toFixed(1)}pp</span>
+      <span style="opacity:0.6">·</span>
+      <span>BL ${blArrow}${Math.abs(blDiff).toFixed(1)}pp</span>
+    </div>`;
+  })() : "";
 
   return `
   <div class="header">
@@ -1055,21 +1467,36 @@ function buildHeader(snap, metrics) {
           Phase: ${snap.phase}
           ${snap.notes ? `<span class="notes-tag">&#9888; ${snap.notes}</span>` : ""}
         </div>
+        <div class="data-source-tag">Data source: <strong>${dataSource === 'files' ? 'data/ folder' : 'built-in'}</strong> &nbsp;|&nbsp; ${SNAPSHOTS.length} snapshot(s) loaded</div>
+      </div>
+      <div class="header-controls">
+        <button class="reload-btn" id="reloadBtn" title="Reload latest data from data/ folder">
+          <span class="reload-icon">&#8635;</span>
+          <span class="reload-label">Reload</span>
+        </button>
       </div>
     </div>
-    <div class="exec-pills">
+    ${buildSystemHeadline(snap, metrics)}
+    <div class="exec-pills" style="margin-top:10px">
       ${pills.map(p => `
         <div class="pill ${p.cls}">
           <span class="pill-label">${p.label}</span>
           <strong>${p.value}</strong>
+          ${p.delta}
         </div>
       `).join("")}
+      ${vsPrevPill}
     </div>
   </div>`;
 }
 
 function buildControlsBar(snap) {
-  const snapshotOptions = SNAPSHOTS.map((s, i) =>
+  // When phase filter is active, restrict the snapshot selector to matching phases only
+  const visibleSnapshots = state.phaseFilter.length > 0
+    ? SNAPSHOTS.map((s, i) => ({ s, i })).filter(({ s }) => state.phaseFilter.includes(s.phase))
+    : SNAPSHOTS.map((s, i) => ({ s, i }));
+
+  const snapshotOptions = visibleSnapshots.map(({ s, i }) =>
     `<option value="${i}" ${i === state.selectedSnapshot ? "selected" : ""}>${s.reportDate} (${s.environment})</option>`
   ).join("");
 
@@ -1094,6 +1521,10 @@ function buildControlsBar(snap) {
       <span class="control-label">Compare</span>
       <button class="toggle-btn ${state.compareMode ? "active" : ""}" id="compareModeBtn">
         ${state.compareMode ? "Compare ON" : "Compare OFF"}
+      </button>
+      <button class="quick-compare-btn" id="quickCompareBtn"
+        ${state.selectedSnapshot === 0 ? 'disabled title="No previous snapshot available"' : 'title="Compare current vs previous snapshot"'}>
+        &#9741; vs Previous
       </button>
       ${state.compareMode ? `
         <select class="ctrl-select" id="compareSelect">${compareOptions}</select>
@@ -1134,6 +1565,14 @@ function buildControlsBar(snap) {
         ${state.riskOnly ? "&#9888; Risk Only ON" : "Risk Only"}
       </button>
     </div>
+
+    <div class="control-divider"></div>
+
+    <div class="control-group">
+      <button class="reset-btn" id="resetBtn" title="Reset all filters and selections to default">
+        &#8635; Reset
+      </button>
+    </div>
   </div>`;
 }
 
@@ -1161,26 +1600,131 @@ function buildCompareBar(snap, cSnap) {
 }
 
 function buildSnapshotView(snap, metrics, cSnap, cMetrics) {
+  const phaseNotice = state.phaseFilter.length > 0 ? `
+  <div class="phase-filter-notice">
+    &#9432; Phase filter active: <strong>${state.phaseFilter.join(", ")}</strong>
+    &mdash; Snapshot selector and Timeline chart are filtered.
+  </div>` : "";
+
   return `
+    ${buildTopRiskCallout(snap, metrics)}
+    ${phaseNotice}
     ${buildKPIRow(snap, metrics, cSnap, cMetrics)}
     ${buildPanelsRow(snap, metrics)}
     ${buildTimelinePanel(snap, metrics)}
   `;
 }
 
+// ─────────────────────────────────────────────
+// HELPER BUILDERS
+// ─────────────────────────────────────────────
+function computeStabilityLabel(metrics) {
+  if (metrics.reopenRate < 10 && metrics.resolutionRate >= 80) return { label: "STABLE",     cls: "stable" };
+  if (metrics.reopenRate < 20 && metrics.resolutionRate >= 60) return { label: "RECOVERING", cls: "recovering" };
+  return { label: "UNSTABLE", cls: "unstable" };
+}
+
+function buildSystemHeadline(snap, metrics) {
+  const idx = state.selectedSnapshot;
+  const prevSnap = idx > 0 ? SNAPSHOTS[idx - 1] : null;
+  const prevM    = prevSnap ? computeMetrics(prevSnap, state.baseline) : null;
+
+  const statusColor = metrics.readiness === "READY" ? "#22c55e"
+    : metrics.readiness === "CAUTION" ? "#f59e0b" : "#ef4444";
+
+  // Identify top risk factor
+  const factors = [
+    { label: `high severity at ${fmtPct(metrics.highSevRate)}`, score: metrics.highSevRate },
+    { label: `backlog at ${fmtPct(metrics.backlogRate)}`,        score: metrics.backlogRate },
+    { label: `reopen rate at ${fmtPct(metrics.reopenRate)}`,     score: metrics.reopenRate * 1.5 },
+  ].sort((a, b) => b.score - a.score);
+  const topFactor = factors[0].label;
+
+  // Direction vs previous
+  let dirText = "";
+  if (prevM) {
+    const resUp  = metrics.resolutionRate - prevM.resolutionRate;
+    const blDown = prevM.backlogRate - metrics.backlogRate;
+    if (resUp > 1 && blDown > 1) dirText = `, improving since ${prevSnap.reportDate}`;
+    else if (resUp < -1 || blDown < -1) dirText = `, worsening since ${prevSnap.reportDate}`;
+    else dirText = `, stable since ${prevSnap.reportDate}`;
+  }
+
+  const borderColor = metrics.readiness === "READY" ? "#22c55e"
+    : metrics.readiness === "CAUTION" ? "#f59e0b" : "#ef4444";
+
+  return `
+  <div class="system-headline" style="border-left-color:${borderColor}">
+    System is <strong style="color:${statusColor}">${metrics.readiness}</strong>
+    &mdash; ${topFactor}${dirText}.
+  </div>`;
+}
+
+function buildTopRiskCallout(snap, metrics) {
+  if (metrics.risk === "LOW" && metrics.readiness !== "NOT READY") return "";
+
+  const items = [];
+  if (metrics.backlogRate >= 25)            items.push(`Backlog ${fmtPct(metrics.backlogRate)}`);
+  if (metrics.highSevRate >= 25)            items.push(`High Severity ${fmtPct(metrics.highSevRate)}`);
+  if (metrics.reopenRate >= 15)             items.push(`Reopen Rate ${fmtPct(metrics.reopenRate)}`);
+  if (snap.open + snap.reopen > 20)         items.push(`${snap.open + snap.reopen} issues still open`);
+  if (snap.toConfirm > 0)                   items.push(`${snap.toConfirm} pending confirmation`);
+  if (items.length === 0) return "";
+
+  const isMedium = metrics.risk === "MEDIUM";
+  const icon = isMedium ? "&#9654;" : "&#9888;";
+  const label = isMedium ? "Caution" : "Risk Alert";
+
+  return `
+  <div class="top-risk-callout ${isMedium ? "medium" : ""}">
+    <span style="font-weight:700">${icon} ${label}:</span>
+    <strong>${items[0]}</strong>
+    ${items.slice(1).map(i => `<span style="color:var(--subtext)">· ${i}</span>`).join("")}
+  </div>`;
+}
+
+function buildTotalIssuesCard(snap, metrics) {
+  const barPct = Math.min(100, metrics.base / 300 * 100);
+  const beforePct = snap.total > 0 ? snap.beforeMRO / snap.total * 100 : 0;
+  const afterPct  = snap.total > 0 ? snap.afterMRO  / snap.total * 100 : 0;
+  return `
+  <div class="kpi-card">
+    <div class="kpi-label">Total Issues</div>
+    <div class="kpi-value" style="color:#3b82f6">${fmtNum(snap.total)}</div>
+    <div class="kpi-sublabel">Base: ${metrics.base} (${state.baseline === "before_mro" ? "Before MRO" : "Total"})</div>
+    <div class="kpi-bar-track">
+      <div class="kpi-bar-fill" style="width:${barPct}%;background:#3b82f6"></div>
+    </div>
+    <div class="mro-split">
+      <div class="mro-split-item">
+        <span class="mro-split-value">${fmtNum(snap.beforeMRO)}</span>
+        <span class="mro-split-label">Before MRO</span>
+      </div>
+      <div class="mro-split-item">
+        <span class="mro-split-value">${fmtNum(snap.afterMRO)}</span>
+        <span class="mro-split-label">After MRO</span>
+      </div>
+    </div>
+  </div>`;
+}
+
 function buildKPIRow(snap, metrics, cSnap, cMetrics) {
-  const cards = [
-    buildKPICard("Total Issues", fmtNum(snap.total), `Base: ${metrics.base} (${state.baseline === "before_mro" ? "Before MRO" : "Total"})`, metrics.base / 300 * 100, "#3b82f6", null, null, null),
-    buildKPICard("Resolved", fmtNum(metrics.resolved), `${fmtPct(metrics.resolutionRate)} resolution`, metrics.resolutionRate, "#22c55e",
-      cMetrics ? getDelta(metrics.resolutionRate, cMetrics.resolutionRate, "resolution") : null, "passed", snap),
-    buildKPICard("Pending", fmtNum(metrics.pending), `${fmtPct(metrics.backlogRate)} backlog rate`, metrics.backlogRate, metrics.backlogRate > 30 ? "#ef4444" : "#f59e0b",
-      cMetrics ? getDelta(metrics.backlogRate, cMetrics.backlogRate, "backlog") : null, "backlog", snap),
-    buildKPICard("Reopen", fmtNum(snap.reopen), `${fmtPct(metrics.reopenRate)} reopen rate`, metrics.reopenRate, metrics.reopenRate > 20 ? "#ef4444" : "#f59e0b",
-      cMetrics ? getDelta(metrics.reopenRate, cMetrics.reopenRate, "reopen") : null, "reopen", snap),
-    buildKPICard("High Severity", fmtNum(snap.severityHigh), `${fmtPct(metrics.highSevRate)} of severity issues`, metrics.highSevRate, metrics.highSevRate > 50 ? "#ef4444" : "#f59e0b",
-      cMetrics ? getDelta(metrics.highSevRate, cMetrics.highSevRate, "highsev") : null, "high_severity", snap),
-    buildReadinessCard(metrics, cMetrics),
+  const allCards = [
+    { risk: false, html: buildTotalIssuesCard(snap, metrics) },
+    { risk: false, html: buildKPICard("Resolved", fmtNum(metrics.resolved), `${fmtPct(metrics.resolutionRate)} resolution`, metrics.resolutionRate, "#22c55e",
+        cMetrics ? getDelta(metrics.resolutionRate, cMetrics.resolutionRate, "resolution") : null, "passed", snap) },
+    { risk: true,  html: buildKPICard("Pending", fmtNum(metrics.pending), `${fmtPct(metrics.backlogRate)} backlog rate`, metrics.backlogRate, metrics.backlogRate > 30 ? "#ef4444" : "#f59e0b",
+        cMetrics ? getDelta(metrics.backlogRate, cMetrics.backlogRate, "backlog") : null, "backlog", snap) },
+    { risk: true,  html: buildKPICard("Reopen", fmtNum(snap.reopen), `${fmtPct(metrics.reopenRate)} reopen rate`, metrics.reopenRate, metrics.reopenRate > 20 ? "#ef4444" : "#f59e0b",
+        cMetrics ? getDelta(metrics.reopenRate, cMetrics.reopenRate, "reopen") : null, "reopen", snap) },
+    { risk: true,  html: buildKPICard("High Severity", fmtNum(snap.severityHigh), `${fmtPct(metrics.highSevRate)} of severity issues`, metrics.highSevRate, metrics.highSevRate > 50 ? "#ef4444" : "#f59e0b",
+        cMetrics ? getDelta(metrics.highSevRate, cMetrics.highSevRate, "highsev") : null, "high_severity", snap) },
+    { risk: true,  html: buildReadinessCard(metrics, cMetrics) },
   ];
+
+  const cards = state.riskOnly
+    ? allCards.filter(c => c.risk).map(c => c.html)
+    : allCards.map(c => c.html);
 
   return `<div class="kpi-row">${cards.join("")}</div>`;
 }
@@ -1233,6 +1777,12 @@ function buildReadinessCard(metrics, cMetrics) {
 }
 
 function buildPanelsRow(snap, metrics) {
+  if (state.riskOnly) {
+    return `
+    <div class="panels-row" style="grid-template-columns:1fr">
+      ${buildRiskPanel(snap, metrics)}
+    </div>`;
+  }
   return `
   <div class="panels-row">
     ${buildQualityPanel(snap, metrics)}
@@ -1249,9 +1799,13 @@ function buildQualityPanel(snap, metrics) {
 
   const prbMax = Math.max(...snap.passedReopenBreakdown, 1);
 
+  const stability = computeStabilityLabel(metrics);
+  const stabilityIcon = stability.cls === "stable" ? "&#10003;" : stability.cls === "recovering" ? "&#9654;" : "&#9888;";
+
   return `
   <div class="panel">
     <div class="panel-title">Quality &amp; Stability</div>
+    <div class="stability-badge ${stability.cls}">${stabilityIcon} ${stability.label}</div>
     <div class="chart-container small">
       <canvas id="doughnutChart"></canvas>
     </div>
@@ -1423,6 +1977,35 @@ function buildTimelineView() {
 // BIND EVENTS
 // ─────────────────────────────────────────────
 function bindEvents() {
+  // Reload button
+  const reloadBtn = document.getElementById("reloadBtn");
+  if (reloadBtn) reloadBtn.addEventListener("click", reloadData);
+
+  // Quick compare: current vs previous
+  const quickCompareBtn = document.getElementById("quickCompareBtn");
+  if (quickCompareBtn) quickCompareBtn.addEventListener("click", () => {
+    if (state.selectedSnapshot > 0) {
+      state.compareMode = true;
+      state.compareSnapshot = state.selectedSnapshot - 1;
+      render();
+    }
+  });
+
+  // Reset dashboard
+  const resetBtn = document.getElementById("resetBtn");
+  if (resetBtn) resetBtn.addEventListener("click", () => {
+    state.selectedSnapshot = SNAPSHOTS.length - 1;
+    state.compareMode = false;
+    state.compareSnapshot = Math.max(0, SNAPSHOTS.length - 2);
+    state.baseline = "before_mro";
+    state.viewMode = "snapshot";
+    state.drilldown = null;
+    state.phaseFilter = [];
+    state.riskOnly = false;
+    state.timelineExpanded = true;
+    render();
+  });
+
   // Snapshot select
   const snapSel = document.getElementById("snapshotSelect");
   if (snapSel) snapSel.addEventListener("change", e => { state.selectedSnapshot = +e.target.value; render(); });
@@ -1445,13 +2028,27 @@ function bindEvents() {
     btn.addEventListener("click", () => { state.viewMode = btn.dataset.view; render(); });
   });
 
-  // Phase chips
+  // Phase chips — also auto-advance snapshot selection when filtered out
   document.querySelectorAll("[data-phase]").forEach(chip => {
     chip.addEventListener("click", () => {
       const phase = chip.dataset.phase;
       const idx = state.phaseFilter.indexOf(phase);
       if (idx === -1) state.phaseFilter.push(phase);
       else state.phaseFilter.splice(idx, 1);
+
+      // If current snapshot is no longer in the active filter, pick the latest valid one
+      if (state.phaseFilter.length > 0) {
+        const currentSnap = SNAPSHOTS[state.selectedSnapshot];
+        if (!state.phaseFilter.includes(currentSnap.phase)) {
+          const validIndices = SNAPSHOTS
+            .map((s, i) => ({ s, i }))
+            .filter(({ s }) => state.phaseFilter.includes(s.phase))
+            .map(({ i }) => i);
+          if (validIndices.length > 0) {
+            state.selectedSnapshot = validIndices[validIndices.length - 1];
+          }
+        }
+      }
       render();
     });
   });
@@ -1892,16 +2489,19 @@ function renderTrendChart() {
   if (filtered.length === 0) return;
 
   const labels = filtered.map(s => s.reportDate);
+  const readinessScore = s => ({ "READY": 100, "CAUTION": 50, "NOT READY": 0 }[computeMetrics(s, state.baseline).readiness] ?? 0);
   const datasets = [
-    { label: "Resolution Rate", data: filtered.map(s => +computeMetrics(s, state.baseline).resolutionRate.toFixed(1)), borderColor: "#22c55e", backgroundColor: "rgba(34,197,94,0.1)", tension: 0.3 },
-    { label: "Backlog Rate", data: filtered.map(s => +computeMetrics(s, state.baseline).backlogRate.toFixed(1)), borderColor: "#ef4444", backgroundColor: "rgba(239,68,68,0.1)", tension: 0.3 },
-    { label: "Reopen Rate", data: filtered.map(s => +computeMetrics(s, state.baseline).reopenRate.toFixed(1)), borderColor: "#f59e0b", backgroundColor: "rgba(245,158,11,0.1)", tension: 0.3 },
-    { label: "High Sev %", data: filtered.map(s => +computeMetrics(s, state.baseline).highSevRate.toFixed(1)), borderColor: "#8b5cf6", backgroundColor: "rgba(139,92,246,0.1)", tension: 0.3 },
+    { label: "Resolution Rate", data: filtered.map(s => +computeMetrics(s, state.baseline).resolutionRate.toFixed(1)), borderColor: "#22c55e", backgroundColor: "rgba(34,197,94,0.1)", tension: 0.3, yAxisID: "y" },
+    { label: "Backlog Rate",    data: filtered.map(s => +computeMetrics(s, state.baseline).backlogRate.toFixed(1)),    borderColor: "#ef4444", backgroundColor: "rgba(239,68,68,0.1)", tension: 0.3, yAxisID: "y" },
+    { label: "Reopen Rate",     data: filtered.map(s => +computeMetrics(s, state.baseline).reopenRate.toFixed(1)),     borderColor: "#f59e0b", backgroundColor: "rgba(245,158,11,0.1)", tension: 0.3, yAxisID: "y" },
+    { label: "High Sev %",      data: filtered.map(s => +computeMetrics(s, state.baseline).highSevRate.toFixed(1)),    borderColor: "#8b5cf6", backgroundColor: "rgba(139,92,246,0.1)", tension: 0.3, yAxisID: "y" },
+    { label: "Readiness",       data: filtered.map(s => readinessScore(s)), borderColor: "#06b6d4", backgroundColor: "rgba(6,182,212,0.05)", borderDash: [6,3], stepped: true, yAxisID: "y", fill: false },
+    { label: "Total Issues",    data: filtered.map(s => s.total), borderColor: "#64748b", backgroundColor: "transparent", borderDash: [3,3], tension: 0.2, yAxisID: "y1", fill: false },
   ];
 
   const chart = new Chart(el, {
     type: "line",
-    data: { labels, datasets: datasets.map(d => ({ ...d, pointRadius: 5, pointHoverRadius: 7, fill: true, borderWidth: 2 })) },
+    data: { labels, datasets: datasets.map(d => ({ ...d, pointRadius: 5, pointHoverRadius: 7, borderWidth: 2 })) },
     options: {
       responsive: true,
       maintainAspectRatio: false,
@@ -1909,17 +2509,25 @@ function renderTrendChart() {
       plugins: {
         legend: { display: true, position: "top", labels: { usePointStyle: true, pointStyle: "circle", padding: 14, font: { size: 11 } } },
         tooltip: {
-          callbacks: { label: ctx => ` ${ctx.dataset.label}: ${ctx.raw}%` }
+          callbacks: { label: ctx => ctx.dataset.yAxisID === "y1"
+            ? ` ${ctx.dataset.label}: ${ctx.raw}`
+            : ctx.dataset.label === "Readiness"
+              ? ` Readiness: ${ctx.raw === 100 ? "READY" : ctx.raw === 50 ? "CAUTION" : "NOT READY"}`
+              : ` ${ctx.dataset.label}: ${ctx.raw}%` }
         }
       },
       scales: {
         x: { grid: { color: "#334155" }, ticks: { color: "#94a3b8", font: { size: 11 } }, border: { display: false } },
         y: {
           grid: { color: "#334155" },
-          ticks: { color: "#94a3b8", font: { size: 11 }, callback: v => v + "%" },
-          border: { display: false },
-          min: 0,
-          max: 110,
+          ticks: { color: "#94a3b8", font: { size: 11 }, callback: v => v === 100 ? "READY/100%" : v === 50 ? "CAUTION" : v + "%" },
+          border: { display: false }, min: 0, max: 110,
+        },
+        y1: {
+          position: "right",
+          grid: { display: false },
+          ticks: { color: "#64748b", font: { size: 10 } },
+          border: { display: false }, min: 0,
         }
       }
     }
@@ -1936,12 +2544,15 @@ function renderTimelineFullChart() {
   if (filtered.length === 0) return;
 
   const labels = filtered.map(s => s.reportDate);
-  const colors = ["#22c55e", "#ef4444", "#f59e0b", "#8b5cf6", "#3b82f6", "#06b6d4"];
+  const colors = ["#22c55e", "#ef4444", "#f59e0b", "#8b5cf6", "#06b6d4", "#64748b"];
+  const readinessScore = s => ({ "READY": 100, "CAUTION": 50, "NOT READY": 0 }[computeMetrics(s, state.baseline).readiness] ?? 0);
   const metricDefs = [
-    { label: "Resolution Rate %", fn: m => +m.resolutionRate.toFixed(1) },
-    { label: "Backlog Rate %", fn: m => +m.backlogRate.toFixed(1) },
-    { label: "Reopen Rate %", fn: m => +m.reopenRate.toFixed(1) },
-    { label: "High Severity %", fn: m => +m.highSevRate.toFixed(1) },
+    { label: "Resolution Rate %", fn: m => +m.resolutionRate.toFixed(1), yAxisID: "y",  tension: 0.3 },
+    { label: "Backlog Rate %",    fn: m => +m.backlogRate.toFixed(1),    yAxisID: "y",  tension: 0.3 },
+    { label: "Reopen Rate %",     fn: m => +m.reopenRate.toFixed(1),     yAxisID: "y",  tension: 0.3 },
+    { label: "High Severity %",   fn: m => +m.highSevRate.toFixed(1),    yAxisID: "y",  tension: 0.3 },
+    { label: "Readiness",         fn: (m, s) => readinessScore(s),       yAxisID: "y",  tension: 0,   stepped: true, borderDash: [6,3] },
+    { label: "Total Issues",      fn: (m, s) => s.total,                 yAxisID: "y1", tension: 0.2, borderDash: [3,3] },
   ];
 
   const legend = document.getElementById("timelineLegend");
@@ -1956,14 +2567,16 @@ function renderTimelineFullChart() {
 
   const datasets = metricDefs.map((def, i) => ({
     label: def.label,
-    data: filtered.map(s => def.fn(computeMetrics(s, state.baseline))),
+    data: filtered.map(s => def.fn(computeMetrics(s, state.baseline), s)),
     borderColor: colors[i],
     backgroundColor: colors[i] + "20",
-    pointRadius: 6,
-    pointHoverRadius: 9,
+    pointRadius: 6, pointHoverRadius: 9,
     fill: false,
-    tension: 0.3,
+    tension: def.tension ?? 0.3,
     borderWidth: 2.5,
+    stepped: def.stepped || false,
+    borderDash: def.borderDash || [],
+    yAxisID: def.yAxisID,
   }));
 
   const chart = new Chart(el, {
@@ -1975,16 +2588,24 @@ function renderTimelineFullChart() {
       interaction: { mode: "index", intersect: false },
       plugins: {
         legend: { display: true, position: "top", labels: { usePointStyle: true, pointStyle: "circle", padding: 16, font: { size: 12 } } },
-        tooltip: { callbacks: { label: ctx => ` ${ctx.dataset.label}: ${ctx.raw}%` } }
+        tooltip: { callbacks: { label: ctx => ctx.dataset.yAxisID === "y1"
+          ? ` ${ctx.dataset.label}: ${ctx.raw}`
+          : ctx.dataset.label === "Readiness"
+            ? ` Readiness: ${ctx.raw === 100 ? "READY" : ctx.raw === 50 ? "CAUTION" : "NOT READY"}`
+            : ` ${ctx.dataset.label}: ${ctx.raw}%` } }
       },
       scales: {
         x: { grid: { color: "#334155" }, ticks: { color: "#94a3b8", font: { size: 12 } }, border: { display: false } },
         y: {
           grid: { color: "#334155" },
-          ticks: { color: "#94a3b8", font: { size: 11 }, callback: v => v + "%" },
-          border: { display: false },
-          min: 0,
-          max: 110,
+          ticks: { color: "#94a3b8", font: { size: 11 }, callback: v => v === 100 ? "READY" : v === 50 ? "CAUTION" : v + "%" },
+          border: { display: false }, min: 0, max: 110,
+        },
+        y1: {
+          position: "right",
+          grid: { display: false },
+          ticks: { color: "#64748b", font: { size: 11 } },
+          border: { display: false }, min: 0,
         }
       }
     }
@@ -2093,7 +2714,7 @@ function renderModalChart(type, snap, metrics) {
 // ─────────────────────────────────────────────
 // INIT
 // ─────────────────────────────────────────────
-render();
+init();
 </script>
 </body>
 </html>
