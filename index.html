@@ -1086,7 +1086,7 @@ let PHASES = ["After Soft Launch 01", "After Soft Launch 02"];
 // MARKDOWN PARSER
 // ─────────────────────────────────────────────
 function parseMarkdownSnapshot(text, filename) {
-  const lines = text.split('\n');
+  const lines = text.replace(/\r/g, '').split('\n');
 
   // Split into named sections by ### headings
   const sectionMap = {};
