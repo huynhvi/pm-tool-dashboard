@@ -1057,6 +1057,26 @@ let SNAPSHOTS = [
     reopenBreakdown: [5, 2, 2, 1],
     severityHigh: 9, severityMedium: 10, severityLow: 0,
     toConfirm: 6, notes: "To confirm: 6 issues"
+  },
+  {
+    id: "raw27march2026", reportDate: "27 Mar 2026", environment: "PROD", phase: "After Mass Roll-out",
+    total: 226, beforeMRO: 180, afterMRO: 46,
+    closed: 11, cancelled: 15, passed: 142,
+    passedReopenBreakdown: [23, 4, 3],
+    open: 51, reopen: 7,
+    reopenBreakdown: [3, 5, 2],
+    severityHigh: 23, severityMedium: 34, severityLow: 1,
+    toConfirm: 0, notes: ""
+  },
+  {
+    id: "raw30march2026", reportDate: "30 Mar 2026", environment: "PROD", phase: "After Mass Roll-out",
+    total: 226, beforeMRO: 180, afterMRO: 46,
+    closed: 11, cancelled: 15, passed: 145,
+    passedReopenBreakdown: [25, 5, 4],
+    open: 48, reopen: 6,
+    reopenBreakdown: [1, 4, 1],
+    severityHigh: 19, severityMedium: 34, severityLow: 1,
+    toConfirm: 0, notes: ""
   }
 ];
 
@@ -1217,13 +1237,14 @@ const DATA_PATH = 'data/';
 let dataSource = 'built-in';
 
 async function loadSnapshotsFromFiles() {
-  const manifestRes = await fetch(`${DATA_PATH}manifest.json`);
+  const cacheBust = `?v=${Date.now()}`;
+  const manifestRes = await fetch(`${DATA_PATH}manifest.json${cacheBust}`);
   if (!manifestRes.ok) throw new Error('manifest not found');
   const manifest = await manifestRes.json();
 
   const results = [];
   for (const filename of manifest.files) {
-    const res = await fetch(`${DATA_PATH}${filename}`);
+    const res = await fetch(`${DATA_PATH}${filename}${cacheBust}`);
     if (!res.ok) { console.warn(`Skipping ${filename} (${res.status})`); continue; }
     const text = await res.text();
     results.push(parseMarkdownSnapshot(text, filename));
